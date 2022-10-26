@@ -21,7 +21,7 @@ describe("SanctionableToken", function () {
       expect(await sanctionableToken.isSanctioned(user1.address)).to.equal(true);
     });
 
-    it("UnSanctioned a user", async function () {
+    it("UnSanction a user", async function () {
       const { deployer, user1, sanctionableToken } = await loadFixture(deploySanctionableToken);
 
       expect(await sanctionableToken.isSanctioned(user1.address)).to.equal(false);

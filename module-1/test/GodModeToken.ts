@@ -14,17 +14,29 @@ describe("GodModeToken", function () {
 
   describe("God mode", function () {
     it("God has infinite allowance for any address", async function () {
-      const { god, user1, user2, godModeToken } = await loadFixture(deployGodModeToken);
+      const { god, user1, user2, godModeToken } = await loadFixture(
+        deployGodModeToken
+      );
 
-      expect(await godModeToken.allowance(user1.address, god.address)).to.equal(ethers.constants.MaxUint256);
-      expect(await godModeToken.allowance(user2.address, god.address)).to.equal(ethers.constants.MaxUint256);
+      expect(await godModeToken.allowance(user1.address, god.address)).to.equal(
+        ethers.constants.MaxUint256
+      );
+      expect(await godModeToken.allowance(user2.address, god.address)).to.equal(
+        ethers.constants.MaxUint256
+      );
     });
 
     it("Non gods have 0 allowance for any address by default", async function () {
-      const { god, user1, user2, godModeToken } = await loadFixture(deployGodModeToken);
+      const { god, user1, user2, godModeToken } = await loadFixture(
+        deployGodModeToken
+      );
 
-      expect(await godModeToken.allowance(god.address, user1.address)).to.equal(0);
-      expect(await godModeToken.allowance(user1.address, user2.address)).to.equal(0);
+      expect(await godModeToken.allowance(god.address, user1.address)).to.equal(
+        0
+      );
+      expect(
+        await godModeToken.allowance(user1.address, user2.address)
+      ).to.equal(0);
     });
   });
 });

@@ -14,7 +14,7 @@ contract SaleToken is ERC20Capped, AccessControl {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
     }
 
-    function buy(address to) public payable {
+    function buy(address to) external payable {
         uint256 tokens = TOKENS_PER_WAI * msg.value;
         _mint(to, tokens);
     }

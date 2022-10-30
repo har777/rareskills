@@ -45,6 +45,7 @@ contract BondingCurveToken is ERC20Capped, AccessControl {
     // Given an amount and the current supply,
     // returns the max number of tokens that can be minted for that amount
     // amount is in wei
+    // Public just because its interesting to play around with
     function getNumOfTokensToMint(uint256 amount, uint256 currentSupply)
         public
         view

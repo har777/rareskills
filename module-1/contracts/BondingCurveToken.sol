@@ -67,7 +67,7 @@ contract BondingCurveToken is ERC20Capped, AccessControl {
     }
 
     // Returns the withdrabale fees collected by the contract
-    function getCollectedFees() public view returns (uint256 _collectedFees) {
+    function getCollectedFees() external view returns (uint256 _collectedFees) {
         _collectedFees = collectedFees;
     }
 

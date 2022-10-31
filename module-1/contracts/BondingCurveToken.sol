@@ -25,6 +25,7 @@ contract BondingCurveToken is ERC20Capped, AccessControl {
         ERC20("BondingCurveToken", "BCT")
         ERC20Capped(SUPPLY_CAP)
     {
+        require(basePrice <= 10**77, "basePrice too high");
         BASE_PRICE = basePrice;
 
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);

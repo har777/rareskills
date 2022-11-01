@@ -13,7 +13,6 @@ contract GodModeToken is ERC20 {
     function allowance(address owner, address spender)
         public
         view
-        virtual
         override
         returns (uint256)
     {

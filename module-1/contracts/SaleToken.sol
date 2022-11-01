@@ -7,15 +7,17 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 error WithdrawFailed(address payable account, uint256 amount);
 
 contract SaleToken is ERC20Capped, AccessControl {
-    uint256 private constant SUPPLY_CAP = 22_000_000 * (10**18);
-    uint256 private constant TOKENS_PER_WAI = 10_000;
+    uint256 public constant SUPPLY_CAP = 22_000_000e18;
+
+    // the amount of tokens you can buy for a wei
+    uint256 public constant TOKENS_PER_WEI = 10_000;
 
     constructor() ERC20("SaleToken", "SLT") ERC20Capped(SUPPLY_CAP) {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
     }
 
     function buy(address to) external payable {
-        uint256 tokens = TOKENS_PER_WAI * msg.value;
+        uint256 tokens = TOKENS_PER_WEI * msg.value;
         _mint(to, tokens);
     }
 

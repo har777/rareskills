@@ -136,7 +136,7 @@ describe("BondingCurveToken", function () {
       expect(user1AfterTx1Balance).to.equal(
         user1BeforeTx1Balance.sub(weiSpentBySellTx1).add(63)
       );
-      expect(await bondingCurveToken.getCollectedFees()).to.equal(7);
+      expect(await bondingCurveToken.collectedFees()).to.equal(7);
       expect(await bondingCurveToken.balanceOf(user1.address)).to.equal(1);
     });
   });
@@ -149,13 +149,13 @@ describe("BondingCurveToken", function () {
       await bondingCurveToken.connect(user1).buy({ value: 60 });
       await bondingCurveToken.connect(user1).sell(5);
 
-      expect(await bondingCurveToken.getCollectedFees()).to.equal(6);
+      expect(await bondingCurveToken.collectedFees()).to.equal(6);
       const currentUser1Balance = await bondingCurveToken.provider.getBalance(
         user1.address
       );
 
       await bondingCurveToken.connect(deployer).withdrawFees(user1.address, 5);
-      expect(await bondingCurveToken.getCollectedFees()).to.equal(1);
+      expect(await bondingCurveToken.collectedFees()).to.equal(1);
       expect(
         await bondingCurveToken.provider.getBalance(user1.address)
       ).to.equal(currentUser1Balance.add(5));

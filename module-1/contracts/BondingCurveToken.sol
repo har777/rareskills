@@ -11,7 +11,7 @@ contract BondingCurveToken is ERC20Capped, AccessControl {
     If the supply goes up by 1, the buy price of the next token becomes prevPrice + 1
     */
 
-    uint256 private constant SUPPLY_CAP = 22_000_000 * (10**18);
+    uint256 public constant SUPPLY_CAP = 22_000_000e18;
 
     // BASE_PRICE represents the price of the first token
     // This is in wei
@@ -19,19 +19,22 @@ contract BondingCurveToken is ERC20Capped, AccessControl {
 
     // Withdrawable fees collected when users sell the token
     // This is in wei
-    uint256 private collectedFees = 0;
+    uint256 public collectedFees;
 
     constructor(uint256 basePrice)
         ERC20("BondingCurveToken", "BCT")
         ERC20Capped(SUPPLY_CAP)
     {
-        require(basePrice <= 10**77, "basePrice too high");
+        require(basePrice <= 1e77, "basePrice too high");
         BASE_PRICE = basePrice;
 
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
     }
 
     // Given a supply, returns the total market cap for those tokens
+    // We take the area of the new supply, subtract the area of the supply at 0
+    // and further subtract a value which will smooth out the result
+    // aka (no more price increments for supply going up a decimal point)
     // Public just because its interesting to play around with
     function getMarketCapForSupply(uint256 supply)
         public
@@ -46,6 +49,12 @@ contract BondingCurveToken is ERC20Capped, AccessControl {
     // Given an amount and the current supply,
     // returns the max number of tokens that can be minted for that amount
     // amount is in wei
+    // Solves quadratic equation:
+    // ax2 + bx + c = 0, where
+    // a, b and c are real numbers and
+    // a ≠ 0
+    // using
+    // (-b ± (b ** 2 - 4 * a * c) ** 0.5) / (2 * a)
     // Public just because its interesting to play around with
     function getNumOfTokensToMint(uint256 amount, uint256 currentSupply)
         public
@@ -65,11 +74,6 @@ contract BondingCurveToken is ERC20Capped, AccessControl {
 
         newSupply = (numeratorRightSide - numeratorLeftSide) / denominator;
         numOfTokens = newSupply - currentSupply;
-    }
-
-    // Returns the withdrabale fees collected by the contract
-    function getCollectedFees() external view returns (uint256 _collectedFees) {
-        _collectedFees = collectedFees;
     }
 
     // Lets a user buy tokens in exchange for wei

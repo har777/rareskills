@@ -7,8 +7,8 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 error AccountIsSanctioned(address account);
 
 contract SanctionableToken is ERC20Capped, AccessControl {
-    mapping(address => bool) sanctioned;
-    uint256 private constant SUPPLY_CAP = 100_000_000 * (10**18);
+    mapping(address => bool) private sanctioned;
+    uint256 public constant SUPPLY_CAP = 100_000_000e18;
 
     event Sanctioned(address indexed account);
     event UnSanctioned(address indexed account);

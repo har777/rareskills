@@ -1,0 +1,19 @@
+{
+  "attributes": [
+    {
+      "trait_type": "Background",
+      "value": "Blue Background"
+    },
+    {
+      "trait_type": "Outfit",
+      "value": "Striped Shirt"
+    },
+    {
+      "trait_type": "Face",
+      "value": "Smile"
+    }
+  ],
+  "image": "ipfs://QmUgFAML8DFFcnBYahzGik1NHypaeTrgSuWvvHbqt9YS3M/3.png",
+  "description": "A collection of 10 NFTs",
+  "name": "Simple NFT #3"
+}

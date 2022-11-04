@@ -8,6 +8,7 @@ describe("SimpleNFT", function () {
 
     const SimpleNFT = await ethers.getContractFactory("SimpleNFT");
     const simpleNFT = await SimpleNFT.deploy();
+    await simpleNFT.deployed();
 
     return { deployer, user1, user2, simpleNFT };
   }
@@ -31,8 +32,12 @@ describe("SimpleNFT", function () {
       await simpleNFT.connect(user1).mint();
       await simpleNFT.connect(user2).mint();
 
-      expect(await simpleNFT.tokenURI(0)).to.equal("ipfs://QmTbZEZiGQhYZQuxo7RCvKz4nVN94nKh1AE6EKS9aahKjQ/0");
-      expect(await simpleNFT.tokenURI(1)).to.equal("ipfs://QmTbZEZiGQhYZQuxo7RCvKz4nVN94nKh1AE6EKS9aahKjQ/1");
+      expect(await simpleNFT.tokenURI(0)).to.equal(
+        "ipfs://QmTbZEZiGQhYZQuxo7RCvKz4nVN94nKh1AE6EKS9aahKjQ/0"
+      );
+      expect(await simpleNFT.tokenURI(1)).to.equal(
+        "ipfs://QmTbZEZiGQhYZQuxo7RCvKz4nVN94nKh1AE6EKS9aahKjQ/1"
+      );
     });
 
     it("Max supply is 10", async function () {
@@ -42,7 +47,9 @@ describe("SimpleNFT", function () {
         await simpleNFT.connect(user1).mint();
       }
 
-      await expect(simpleNFT.connect(user1).mint()).to.be.revertedWith("All NFTs already minted");
+      await expect(simpleNFT.connect(user1).mint()).to.be.revertedWith(
+        "All NFTs already minted"
+      );
     });
   });
 });

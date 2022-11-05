@@ -33,7 +33,7 @@ contract NFTStaker is IERC721Receiver, ReentrancyGuard {
         address from,
         uint256 tokenId,
         bytes calldata data
-    ) external nonReentrant returns (bytes4) {
+    ) external returns (bytes4) {
         Staker storage staker = stakers[from];
 
         // 1. move existing claimable tokens to unclaimed tokens field
@@ -67,7 +67,7 @@ contract NFTStaker is IERC721Receiver, ReentrancyGuard {
         nft.safeTransferFrom(address(this), user, nftId);
     }
 
-    function claimTokens() external nonReentrant {
+    function claimTokens() external {
         address user = msg.sender;
         Staker storage staker = stakers[user];
 

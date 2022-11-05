@@ -23,7 +23,7 @@ contract PrimeNFTCounter {
         uint256 index = 0;
         while (index < userNFTCount) {
             uint256 tokenId = nft.tokenOfOwnerByIndex(user, index);
-            if (isPrime(tokenId)) {
+            if (_isPrime(tokenId)) {
                 unchecked {
                     primeCount += 1;
                 }
@@ -34,7 +34,7 @@ contract PrimeNFTCounter {
         }
     }
 
-    function isPrime(uint256 number) public pure returns (bool) {
+    function _isPrime(uint256 number) internal pure returns (bool) {
         if (number > 1) {
             uint256 index = 2;
             uint256 limit = Math.sqrt(number) + 1;

@@ -16,6 +16,7 @@ contract NFTStaker is IERC721Receiver, ReentrancyGuard {
 
     struct Staker {
         uint256 nftCount;
+        // using block.timestamp even though it can be manipulated to an extend
         uint256 lastUpdated;
         uint256 unclaimedTokens;
     }
@@ -61,9 +62,6 @@ contract NFTStaker is IERC721Receiver, ReentrancyGuard {
 
         // 3. reduce count of nft's staked by the user
         staker.nftCount -= 1;
-
-        // Don't see why this update is needed as another staking will update this value anyway
-        // nftIdToOriginalOwner[nftId] = address(0);
 
         // 4. transfer nft back to user
         nft.safeTransferFrom(address(this), user, nftId);

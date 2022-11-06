@@ -54,7 +54,7 @@ contract NFTStaker is IERC721Receiver, ReentrancyGuard {
         // 1. move existing claimable tokens to unclaimed tokens field
         _updateUnclaimedTokens(staker);
 
-        // 2. check if user is original owner and transfer nft back
+        // 2. check if user is original owner
         require(
             nftIdToOriginalOwner[nftId] == user,
             "NFT can only be withdrawn by its staker"
@@ -63,7 +63,12 @@ contract NFTStaker is IERC721Receiver, ReentrancyGuard {
         // 3. reduce count of nft's staked by the user
         staker.nftCount -= 1;
 
-        // 4. transfer nft back to user
+        // 4. set original owner of nft to address(0)
+        // I thought I could ignore this step because safeTransferFrom would revert if user tried to withdraw twice
+        // but can cause issues if the user approves the nft again for the contract and make the nftCount state wrong
+        nftIdToOriginalOwner[nftId] = address(0);
+
+        // 5. transfer nft back to user
         nft.safeTransferFrom(address(this), user, nftId);
     }
 
@@ -94,9 +99,9 @@ contract NFTStaker is IERC721Receiver, ReentrancyGuard {
         view
         returns (uint256 newClaimableTokens)
     {
-        uint256 timeSinceLastClaim = block.timestamp - staker.lastUpdated;
+        uint256 secondsSinceLastClaim = block.timestamp - staker.lastUpdated;
         newClaimableTokens =
-            (timeSinceLastClaim * staker.nftCount * TOKENS_PER_DAY) /
+            (secondsSinceLastClaim * staker.nftCount * TOKENS_PER_DAY) /
             1 days;
     }
 

@@ -34,14 +34,21 @@ contract NFTStaker is IERC721Receiver, ReentrancyGuard {
         uint256 tokenId,
         bytes calldata data
     ) external returns (bytes4) {
+        // if the user does a transferFrom instead of safeTransferFrom then this logic
+        // is never called and the nft is trapped
+        // wonder if there is a better way to do this?
+
+        // 1. check if nft received is from the nft contract we expect
+        require(msg.sender == address(nft), "Incorrect nft received");
+
         Staker storage staker = stakers[from];
 
-        // 1. move existing claimable tokens to unclaimed tokens field
+        // 2. move existing claimable tokens to unclaimed tokens field
         _updateUnclaimedTokens(staker);
 
-        // 2. increase count of nft's staked by the user
+        // 3. increase count of nft's staked by the user
         staker.nftCount += 1;
-        // 3. track the original owner of the staked nft so that they can withdraw it eventually
+        // 4. track the original owner of the staked nft so that they can withdraw it eventually
         nftIdToOriginalOwner[tokenId] = from;
 
         return IERC721Receiver.onERC721Received.selector;

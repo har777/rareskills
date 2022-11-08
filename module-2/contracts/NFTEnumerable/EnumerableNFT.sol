@@ -5,13 +5,13 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-contract EnumerableNFT is ERC721, ERC721Enumerable, ReentrancyGuard {
+contract EnumerableNFT is ERC721, ERC721Enumerable {
     uint256 public supply;
     uint256 public constant MAX_SUPPLY = 20;
 
     constructor() ERC721("EnumerableNFT", "ENFT") {}
 
-    function safeMint() external nonReentrant {
+    function safeMint() external {
         uint256 _supply = supply;
         require(_supply < MAX_SUPPLY, "All NFTs already minted");
         unchecked {

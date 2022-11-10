@@ -1,0 +1,19 @@
+{
+  "attributes": [
+    {
+      "trait_type": "Background",
+      "value": "Green Background"
+    },
+    {
+      "trait_type": "Outfit",
+      "value": "Cape Shirt"
+    },
+    {
+      "trait_type": "Face",
+      "value": "Surprised"
+    }
+  ],
+  "image": "ipfs://QmUgFAML8DFFcnBYahzGik1NHypaeTrgSuWvvHbqt9YS3M/4.png",
+  "description": "A collection of 10 NFTs",
+  "name": "Simple NFT #4"
+}

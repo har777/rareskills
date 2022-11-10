@@ -14,11 +14,9 @@ contract PrimeNFTCounter {
         nft = _nft;
     }
 
-    function getPrimeNFTCount(address user)
-        external
-        view
-        returns (uint256 primeCount)
-    {
+    function getPrimeNFTCount(
+        address user
+    ) external view returns (uint256 primeCount) {
         uint256 userNFTCount = nft.balanceOf(user);
         uint256 index = 0;
         while (index < userNFTCount) {

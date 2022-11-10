@@ -101,22 +101,18 @@ contract NFTStaker is IERC721Receiver, ReentrancyGuard {
         staker.lastUpdated = block.timestamp;
     }
 
-    function _getNewClaimableTokens(Staker memory staker)
-        internal
-        view
-        returns (uint256 newClaimableTokens)
-    {
+    function _getNewClaimableTokens(
+        Staker memory staker
+    ) internal view returns (uint256 newClaimableTokens) {
         uint256 secondsSinceLastClaim = block.timestamp - staker.lastUpdated;
         newClaimableTokens =
             (secondsSinceLastClaim * staker.nftCount * TOKENS_PER_DAY) /
             1 days;
     }
 
-    function _getTotalClaimableTokens(Staker memory staker)
-        internal
-        view
-        returns (uint256 totalUnclaimedTokens)
-    {
+    function _getTotalClaimableTokens(
+        Staker memory staker
+    ) internal view returns (uint256 totalUnclaimedTokens) {
         totalUnclaimedTokens =
             _getNewClaimableTokens(staker) +
             staker.unclaimedTokens;

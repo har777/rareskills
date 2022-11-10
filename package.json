@@ -6,6 +6,7 @@
   "scripts": {
     "solhint": "solhint 'module-*/contracts/**/*.sol'",
     "slither": "slither 'module-*/.'",
+    "fmt": "prettier --write './**/*.sol' './**/*.js' './**/*.ts' './**/*.json' './**/*.md' './**/*.yml'",
     "prepare": "husky install"
   },
   "repository": {

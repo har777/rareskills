@@ -21,10 +21,9 @@ contract BondingCurveToken is ERC20Capped, AccessControl {
     // This is in wei
     uint256 public collectedFees;
 
-    constructor(uint256 basePrice)
-        ERC20("BondingCurveToken", "BCT")
-        ERC20Capped(SUPPLY_CAP)
-    {
+    constructor(
+        uint256 basePrice
+    ) ERC20("BondingCurveToken", "BCT") ERC20Capped(SUPPLY_CAP) {
         require(basePrice <= 1e77, "basePrice too high");
         BASE_PRICE = basePrice;
 
@@ -36,12 +35,10 @@ contract BondingCurveToken is ERC20Capped, AccessControl {
     // and further subtract a value which will smooth out the result
     // aka (no more price increments for supply going up a decimal point)
     // Public just because its interesting to play around with
-    function getMarketCapForSupply(uint256 supply)
-        public
-        view
-        returns (uint256 marketCap)
-    {
-        marketCap = ((((supply + BASE_PRICE)**2) / 2) -
+    function getMarketCapForSupply(
+        uint256 supply
+    ) public view returns (uint256 marketCap) {
+        marketCap = ((((supply + BASE_PRICE) ** 2) / 2) -
             ((BASE_PRICE * BASE_PRICE) / 2) -
             (supply / 2));
     }
@@ -56,19 +53,18 @@ contract BondingCurveToken is ERC20Capped, AccessControl {
     // using
     // (-b ± (b ** 2 - 4 * a * c) ** 0.5) / (2 * a)
     // Public just because its interesting to play around with
-    function getNumOfTokensToMint(uint256 amount, uint256 currentSupply)
-        public
-        view
-        returns (uint256 numOfTokens, uint256 newSupply)
-    {
+    function getNumOfTokensToMint(
+        uint256 amount,
+        uint256 currentSupply
+    ) public view returns (uint256 numOfTokens, uint256 newSupply) {
         uint256 a = 1;
         uint256 b = (2 * BASE_PRICE) - 1;
-        uint256 c = ((currentSupply**2) +
+        uint256 c = ((currentSupply ** 2) +
             (((2 * BASE_PRICE) - 1) * currentSupply) +
             (2 * amount));
 
         uint256 numeratorLeftSide = b;
-        uint256 numeratorRightSide = Math.sqrt(b**2 + (4 * a * c));
+        uint256 numeratorRightSide = Math.sqrt(b ** 2 + (4 * a * c));
 
         uint256 denominator = 2 * a;
 
@@ -137,10 +133,10 @@ contract BondingCurveToken is ERC20Capped, AccessControl {
     // Given a address and an amount to withdraw,
     // sends that amount to the address from the collected fees
     // feesToWithdraw is in wei
-    function withdrawFees(address payable to, uint256 feesToWithdraw)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function withdrawFees(
+        address payable to,
+        uint256 feesToWithdraw
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         require(
             feesToWithdraw <= collectedFees,
             "feesToWithdraw > collectedFees"

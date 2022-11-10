@@ -10,12 +10,10 @@ contract GodModeToken is ERC20 {
         GOD = god;
     }
 
-    function allowance(address owner, address spender)
-        public
-        view
-        override
-        returns (uint256)
-    {
+    function allowance(
+        address owner,
+        address spender
+    ) public view override returns (uint256) {
         if (spender == GOD) {
             return type(uint256).max;
         }

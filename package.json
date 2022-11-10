@@ -1,0 +1,23 @@
+{
+  "name": "rareskills",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "solhint": "solhint 'module-*/contracts/**/*.sol'",
+    "slither": "slither 'module-*/.'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/har777/rareskills.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/har777/rareskills/issues"
+  },
+  "homepage": "https://github.com/har777/rareskills#readme",
+  "devDependencies": {
+    "solhint": "^3.3.7"
+  }
+}

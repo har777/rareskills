@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "solhint": "solhint 'module-*/contracts/**/*.sol'",
-    "slither": "slither 'module-*/.'"
+    "slither": "slither 'module-*/.'",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -18,6 +19,12 @@
   },
   "homepage": "https://github.com/har777/rareskills#readme",
   "devDependencies": {
+    "husky": "^8.0.2",
+    "lint-staged": "^13.0.3",
+    "prettier": "^2.7.1",
     "solhint": "^3.3.7"
+  },
+  "lint-staged": {
+    "*.{js,md,sol,json,yml,ts}": "prettier --write"
   }
 }

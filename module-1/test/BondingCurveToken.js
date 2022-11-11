@@ -1,6 +1,5 @@
-import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
-import { expect } from "chai";
-import { ethers } from "hardhat";
+const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
+const { expect } = require("chai");
 
 describe("BondingCurveToken", function () {
   async function deployBondingCurveToken() {
@@ -14,9 +13,7 @@ describe("BondingCurveToken", function () {
     return { deployer, user1, user2, bondingCurveToken };
   }
 
-  async function getTestHelperBondingCurveToken(
-    bondingCurveTokenAddress: string
-  ) {
+  async function getTestHelperBondingCurveToken(bondingCurveTokenAddress) {
     const [, , , , user4] = await ethers.getSigners();
 
     const TestHelperBondingCurveToken = await ethers.getContractFactory(
@@ -49,9 +46,9 @@ describe("BondingCurveToken", function () {
 
     it("tokens 7 to 10 cost 70", async function () {
       const { bondingCurveToken } = await loadFixture(deployBondingCurveToken);
-      const marketCapForFirstTenTokens: any =
+      const marketCapForFirstTenTokens =
         await bondingCurveToken.getMarketCapForSupply(10);
-      const marketCapForFirstSixTokens: any =
+      const marketCapForFirstSixTokens =
         await bondingCurveToken.getMarketCapForSupply(6);
       expect(marketCapForFirstTenTokens - marketCapForFirstSixTokens).to.equal(
         70

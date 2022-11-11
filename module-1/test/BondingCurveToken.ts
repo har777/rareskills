@@ -14,6 +14,28 @@ describe("BondingCurveToken", function () {
     return { deployer, user1, user2, bondingCurveToken };
   }
 
+  async function getTestHelperBondingCurveToken(
+    bondingCurveTokenAddress: string
+  ) {
+    const [, , , , user4] = await ethers.getSigners();
+
+    const TestHelperBondingCurveToken = await ethers.getContractFactory(
+      "TestHelperBondingCurveToken"
+    );
+    const testHelperBondingCurveToken =
+      await TestHelperBondingCurveToken.deploy(bondingCurveTokenAddress);
+
+    await user4.sendTransaction({
+      to: testHelperBondingCurveToken.address,
+      value: ethers.utils.parseEther("1.0"),
+      data: testHelperBondingCurveToken.interface.encodeFunctionData(
+        "fundTestHelper"
+      ),
+    });
+
+    return { testHelperBondingCurveToken };
+  }
+
   describe("getMarketCapForSupply", function () {
     it("first token costs 10", async function () {
       const { bondingCurveToken } = await loadFixture(deployBondingCurveToken);
@@ -139,6 +161,19 @@ describe("BondingCurveToken", function () {
       expect(await bondingCurveToken.collectedFees()).to.equal(7);
       expect(await bondingCurveToken.balanceOf(user1.address)).to.equal(1);
     });
+
+    it("no fees collected if sale proceed is < 10 wei", async function () {
+      const [_, user1] = await ethers.getSigners();
+
+      const BondingCurveToken = await ethers.getContractFactory(
+        "BondingCurveToken"
+      );
+      const bondingCurveToken = await BondingCurveToken.deploy(5);
+
+      await bondingCurveToken.connect(user1).buy({ value: 6 });
+      await bondingCurveToken.connect(user1).sell(1);
+      expect(await bondingCurveToken.collectedFees()).to.equal(0);
+    });
   });
 
   describe("withdrawFees", function () {
@@ -160,5 +195,119 @@ describe("BondingCurveToken", function () {
         await bondingCurveToken.provider.getBalance(user1.address)
       ).to.equal(currentUser1Balance.add(5));
     });
+  });
+
+  describe("reverts", function () {
+    it("base price too high", async function () {
+      const BondingCurveToken = await ethers.getContractFactory(
+        "BondingCurveToken"
+      );
+      await expect(
+        BondingCurveToken.deploy(
+          "100000000000000000000000000000000000000000000000000000000000000000000000000001"
+        )
+      ).to.be.revertedWith("basePrice too high");
+    });
+  });
+
+  it("wei sent for buying too low to buy any tokens", async function () {
+    const { user1, bondingCurveToken } = await loadFixture(
+      deployBondingCurveToken
+    );
+    await expect(
+      bondingCurveToken.connect(user1).buy({ value: 1 })
+    ).to.be.revertedWith("Amount not enough to buy a token");
+  });
+
+  it("buy refund extra wei failed", async function () {
+    const { bondingCurveToken } = await loadFixture(deployBondingCurveToken);
+    const { testHelperBondingCurveToken } =
+      await getTestHelperBondingCurveToken(bondingCurveToken.address);
+
+    await expect(testHelperBondingCurveToken.buy(15)).to.be.revertedWith(
+      "Refund of extra wei during buy failed"
+    );
+  });
+
+  it("sell quantity more than quantity owned", async function () {
+    const { user1, bondingCurveToken } = await loadFixture(
+      deployBondingCurveToken
+    );
+    await expect(bondingCurveToken.connect(user1).sell(1)).to.be.revertedWith(
+      "quantity higher than balance"
+    );
+  });
+
+  it("sell sending wei back failed", async function () {
+    const { user1, bondingCurveToken } = await loadFixture(
+      deployBondingCurveToken
+    );
+
+    const { testHelperBondingCurveToken } =
+      await getTestHelperBondingCurveToken(bondingCurveToken.address);
+
+    await user1.sendTransaction({
+      to: testHelperBondingCurveToken.address,
+      value: ethers.utils.parseEther("1.0"),
+      data: testHelperBondingCurveToken.interface.encodeFunctionData(
+        "fundTestHelper"
+      ),
+    });
+
+    await testHelperBondingCurveToken.buy(10);
+    await expect(testHelperBondingCurveToken.sell(1)).to.be.revertedWith(
+      "Sell user proceeds transfer back failed"
+    );
+  });
+
+  it("withdrawFees called by non-admin", async function () {
+    const { user1, bondingCurveToken } = await loadFixture(
+      deployBondingCurveToken
+    );
+    const revertReason = `AccessControl: account ${user1.address.toLowerCase()} is missing role 0x0000000000000000000000000000000000000000000000000000000000000000`;
+    await expect(
+      bondingCurveToken.connect(user1).withdrawFees(user1.address, 1)
+    ).to.be.revertedWith(revertReason);
+  });
+
+  it("fees to withdraw more than collectedFees", async function () {
+    const { deployer, user1, bondingCurveToken } = await loadFixture(
+      deployBondingCurveToken
+    );
+
+    await bondingCurveToken.connect(user1).buy({ value: 60 });
+    await bondingCurveToken
+      .connect(user1)
+      .sell(await bondingCurveToken.totalSupply());
+    await expect(
+      bondingCurveToken
+        .connect(deployer)
+        .withdrawFees(
+          deployer.address,
+          (await bondingCurveToken.collectedFees()).add(1)
+        )
+    ).to.be.revertedWith("feesToWithdraw > collectedFees");
+  });
+
+  it("withdrawFees sending wei back failed", async function () {
+    const { deployer, user1, bondingCurveToken } = await loadFixture(
+      deployBondingCurveToken
+    );
+
+    const { testHelperBondingCurveToken } =
+      await getTestHelperBondingCurveToken(bondingCurveToken.address);
+
+    await bondingCurveToken.connect(user1).buy({ value: 60 });
+    await bondingCurveToken
+      .connect(user1)
+      .sell(await bondingCurveToken.totalSupply());
+    await expect(
+      bondingCurveToken
+        .connect(deployer)
+        .withdrawFees(
+          testHelperBondingCurveToken.address,
+          await bondingCurveToken.collectedFees()
+        )
+    ).to.be.revertedWith("Fees withdraw failed");
   });
 });

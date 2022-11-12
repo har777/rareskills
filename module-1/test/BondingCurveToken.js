@@ -33,6 +33,19 @@ describe("BondingCurveToken", function () {
     return { testHelperBondingCurveToken };
   }
 
+  describe("deploy", function () {
+    it("max base supply of 1e77", async function () {
+      const BondingCurveToken = await ethers.getContractFactory(
+        "BondingCurveToken"
+      );
+      expect(
+        await BondingCurveToken.deploy(
+          "100000000000000000000000000000000000000000000000000000000000000000000000000000"
+        )
+      ).to.be.ok;
+    });
+  });
+
   describe("getMarketCapForSupply", function () {
     it("first token costs 10", async function () {
       const { bondingCurveToken } = await loadFixture(deployBondingCurveToken);

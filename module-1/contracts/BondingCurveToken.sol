@@ -137,6 +137,7 @@ contract BondingCurveToken is ERC20Capped, AccessControl {
         address payable to,
         uint256 feesToWithdraw
     ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        require(to != address(0), "to cannot be a zero address");
         require(
             feesToWithdraw <= collectedFees,
             "feesToWithdraw > collectedFees"

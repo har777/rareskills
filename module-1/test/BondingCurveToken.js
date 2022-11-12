@@ -267,6 +267,25 @@ describe("BondingCurveToken", function () {
     ).to.be.revertedWith(revertReason);
   });
 
+  it("withdrawFees called with to being a zero address", async function () {
+    const { deployer, user1, bondingCurveToken } = await loadFixture(
+      deployBondingCurveToken
+    );
+
+    await bondingCurveToken.connect(user1).buy({ value: 60 });
+    await bondingCurveToken
+      .connect(user1)
+      .sell(await bondingCurveToken.totalSupply());
+    await expect(
+      bondingCurveToken
+        .connect(deployer)
+        .withdrawFees(
+          ethers.constants.AddressZero,
+          await bondingCurveToken.collectedFees()
+        )
+    ).to.be.revertedWith("to cannot be a zero address");
+  });
+
   it("fees to withdraw more than collectedFees", async function () {
     const { deployer, user1, bondingCurveToken } = await loadFixture(
       deployBondingCurveToken

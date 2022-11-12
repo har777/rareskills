@@ -1,8 +1,6 @@
-import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
-import { expect } from "chai";
-import { ethers } from "hardhat";
-import { utils } from "ethers";
-import { time } from "@nomicfoundation/hardhat-network-helpers";
+const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
+const { expect } = require("chai");
+const { time } = require("@nomicfoundation/hardhat-network-helpers");
 
 describe("NFTStaker", function () {
   const PER_SECOND_TOKEN_REWARD = (10n * 10n ** 18n) / 86400n;
@@ -25,7 +23,7 @@ describe("NFTStaker", function () {
     await token
       .connect(deployer)
       .grantRole(
-        utils.keccak256(utils.toUtf8Bytes("MINTER_ROLE")),
+        ethers.utils.keccak256(ethers.utils.toUtf8Bytes("MINTER_ROLE")),
         staker.address
       );
 

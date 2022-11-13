@@ -2,11 +2,10 @@
 pragma solidity 0.8.17;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./RewardToken.sol";
 import "./RewardNFT.sol";
 
-contract NFTStaker is IERC721Receiver, ReentrancyGuard {
+contract NFTStaker is IERC721Receiver {
     uint256 private constant TOKENS_PER_DAY = 10e18;
 
     RewardToken public immutable token;
@@ -54,18 +53,22 @@ contract NFTStaker is IERC721Receiver, ReentrancyGuard {
         return IERC721Receiver.onERC721Received.selector;
     }
 
-    function withdrawNFT(uint256 nftId) external nonReentrant {
+    // NOTE: I removed the reentrancy check here because I don't see how rerentrancy
+    // is possible here given the safeTransferFrom call is the last statement
+    // and any reentracy will already encounter updated state
+    // But this might be wrong. Recheck.
+    function withdrawNFT(uint256 nftId) external {
         address user = msg.sender;
         Staker storage staker = stakers[user];
 
-        // 1. move existing claimable tokens to unclaimed tokens field
-        _updateUnclaimedTokens(staker);
-
-        // 2. check if user is original owner
+        // 1. check if user is original owner
         require(
             nftIdToOriginalOwner[nftId] == user,
             "NFT can only be withdrawn by its staker"
         );
+
+        // 2. move existing claimable tokens to unclaimed tokens field
+        _updateUnclaimedTokens(staker);
 
         // 3. reduce count of nft's staked by the user
         staker.nftCount -= 1;

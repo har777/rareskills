@@ -53,5 +53,29 @@ describe("SaleToken", function () {
         saleToken.connect(user1).withdraw(user1.address)
       ).to.be.revertedWith(revertReason);
     });
+
+    it("withdraw to contract which doesn't implement fallback methods", async function () {
+      const { deployer, user1, saleToken } = await loadFixture(deploySaleToken);
+
+      const TestHelperBondingCurveToken = await ethers.getContractFactory(
+        "TestHelperBondingCurveToken"
+      );
+      const testHelperBondingCurveToken =
+        await TestHelperBondingCurveToken.deploy(ethers.constants.AddressZero);
+
+      await saleToken.connect(user1).buy(user1.address, {
+        value: ethers.utils.parseEther("1"),
+      });
+      await expect(
+        saleToken
+          .connect(deployer)
+          .withdraw(testHelperBondingCurveToken.address)
+      )
+        .to.be.revertedWithCustomError(saleToken, "WithdrawFailed")
+        .withArgs(
+          testHelperBondingCurveToken.address,
+          ethers.utils.parseEther("1")
+        );
+    });
   });
 });

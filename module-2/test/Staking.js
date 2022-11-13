@@ -175,4 +175,39 @@ describe("NFTStaker", function () {
       20n * 10n ** 18n + PER_SECOND_TOKEN_REWARD * 3n + 1n
     );
   });
+
+  describe("reverts", function () {
+    it("non minter tries to mint tokens", async function () {
+      const { user1, token } = await loadFixture(deployStaking);
+
+      const minterRole = ethers.utils.keccak256(
+        ethers.utils.toUtf8Bytes("MINTER_ROLE")
+      );
+      const revertReason = `AccessControl: account ${user1.address.toLowerCase()} is missing role ${minterRole}`;
+      await expect(
+        token.connect(user1).mint(user1.address, 1)
+      ).to.be.revertedWith(revertReason);
+    });
+
+    it("withdrawNFT of nft not being called by previous owner", async function () {
+      const { user1, staker } = await loadFixture(deployStaking);
+      await expect(staker.connect(user1).withdrawNFT(1)).to.be.revertedWith(
+        "NFT can only be withdrawn by its staker"
+      );
+    });
+
+    it("onERC721Received of staker called by address which is not the NFT initialised in the staker", async function () {
+      const { user1, staker } = await loadFixture(deployStaking);
+      await expect(
+        staker
+          .connect(user1)
+          .onERC721Received(
+            user1.address,
+            user1.address,
+            1,
+            ethers.utils.defaultAbiCoder.encode(["string"], [""])
+          )
+      ).to.be.revertedWith("Incorrect nft received");
+    });
+  });
 });

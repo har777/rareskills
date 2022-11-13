@@ -53,5 +53,12 @@ describe("PrimeNFTCounter", function () {
       expect(await primeNFTCounter.getPrimeNFTCount(user1.address)).to.equal(4);
       expect(await primeNFTCounter.getPrimeNFTCount(user2.address)).to.equal(4);
     });
+
+    it("EnumerableNFT supportsInterface", async function () {
+      const { enumerableNFT } = await loadFixture(deploySimpleNFT);
+      expect(await enumerableNFT.supportsInterface("0x80ac58cd")).to.equal(
+        true
+      );
+    });
   });
 });

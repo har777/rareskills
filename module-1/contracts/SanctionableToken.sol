@@ -17,6 +17,13 @@ contract SanctionableToken is ERC20Capped, AccessControl {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
     }
 
+    function mint(
+        address to,
+        uint256 amount
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        _mint(to, amount);
+    }
+
     function sanction(address account) external onlyRole(DEFAULT_ADMIN_ROLE) {
         sanctioned[account] = true;
         emit Sanctioned(account);

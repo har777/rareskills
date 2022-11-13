@@ -13,6 +13,33 @@ describe("SanctionableToken", function () {
     return { deployer, user1, user2, sanctionableToken };
   }
 
+  describe("Minting and transfers", function () {
+    it("Minting works", async function () {
+      const { deployer, user1, sanctionableToken } = await loadFixture(
+        deploySanctionableToken
+      );
+
+      expect(await sanctionableToken.connect(deployer).mint(user1.address, 1))
+        .to.be.ok;
+      expect(await sanctionableToken.balanceOf(user1.address)).to.equal(1);
+    });
+
+    it("Transfers works", async function () {
+      const { deployer, user1, sanctionableToken } = await loadFixture(
+        deploySanctionableToken
+      );
+
+      await sanctionableToken.connect(deployer).mint(user1.address, 1);
+      expect(await sanctionableToken.balanceOf(deployer.address)).to.equal(0);
+      expect(await sanctionableToken.balanceOf(user1.address)).to.equal(1);
+      expect(
+        await sanctionableToken.connect(user1).transfer(deployer.address, 1)
+      ).to.be.ok;
+      expect(await sanctionableToken.balanceOf(deployer.address)).to.equal(1);
+      expect(await sanctionableToken.balanceOf(user1.address)).to.equal(0);
+    });
+  });
+
   describe("Sanctions", function () {
     it("Sanction a user", async function () {
       const { deployer, user1, sanctionableToken } = await loadFixture(
@@ -94,6 +121,16 @@ describe("SanctionableToken", function () {
   });
 
   describe("reverts", function () {
+    it("mint called by non-admin", async function () {
+      const { user1, sanctionableToken } = await loadFixture(
+        deploySanctionableToken
+      );
+      const revertReason = `AccessControl: account ${user1.address.toLowerCase()} is missing role 0x0000000000000000000000000000000000000000000000000000000000000000`;
+      await expect(
+        sanctionableToken.connect(user1).mint(user1.address, 1)
+      ).to.be.revertedWith(revertReason);
+    });
+
     it("sanction called by non-admin", async function () {
       const { user1, sanctionableToken } = await loadFixture(
         deploySanctionableToken

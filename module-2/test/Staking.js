@@ -171,8 +171,9 @@ describe("NFTStaker", function () {
     expect(await nft.ownerOf(1)).to.equal(user1.address);
     expect(await nft.ownerOf(2)).to.equal(staker.address);
 
+    await time.increase(86400);
     expect(await staker.connect(user1).getTotalClaimableTokens()).to.equal(
-      20n * 10n ** 18n + PER_SECOND_TOKEN_REWARD * 3n + 1n
+      30n * 10n ** 18n + PER_SECOND_TOKEN_REWARD * 3n + 1n
     );
   });
 

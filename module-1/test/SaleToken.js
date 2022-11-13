@@ -57,25 +57,19 @@ describe("SaleToken", function () {
     it("withdraw to contract which doesn't implement fallback methods", async function () {
       const { deployer, user1, saleToken } = await loadFixture(deploySaleToken);
 
-      const TestHelperBondingCurveToken = await ethers.getContractFactory(
-        "TestHelperBondingCurveToken"
+      const TokenNotAcceptingEther = await ethers.getContractFactory(
+        "SaleToken"
       );
-      const testHelperBondingCurveToken =
-        await TestHelperBondingCurveToken.deploy(ethers.constants.AddressZero);
+      const tokenNotAcceptingEther = await TokenNotAcceptingEther.deploy();
 
       await saleToken.connect(user1).buy(user1.address, {
         value: ethers.utils.parseEther("1"),
       });
       await expect(
-        saleToken
-          .connect(deployer)
-          .withdraw(testHelperBondingCurveToken.address)
+        saleToken.connect(deployer).withdraw(tokenNotAcceptingEther.address)
       )
         .to.be.revertedWithCustomError(saleToken, "WithdrawFailed")
-        .withArgs(
-          testHelperBondingCurveToken.address,
-          ethers.utils.parseEther("1")
-        );
+        .withArgs(tokenNotAcceptingEther.address, ethers.utils.parseEther("1"));
     });
   });
 });

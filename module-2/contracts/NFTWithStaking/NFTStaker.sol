@@ -67,16 +67,16 @@ contract NFTStaker is IERC721Receiver {
             "NFT can only be withdrawn by its staker"
         );
 
-        // 2. move existing claimable tokens to unclaimed tokens field
-        _updateUnclaimedTokens(staker);
-
-        // 3. reduce count of nft's staked by the user
-        staker.nftCount -= 1;
-
-        // 4. set original owner of nft to address(0)
+        // 2. set original owner of nft to address(0)
         // I thought I could ignore this step because safeTransferFrom would revert if user tried to withdraw twice
         // but can cause issues if the user approves the nft again for the contract and make the nftCount state wrong
         nftIdToOriginalOwner[nftId] = address(0);
+
+        // 3. move existing claimable tokens to unclaimed tokens field
+        _updateUnclaimedTokens(staker);
+
+        // 4. reduce count of nft's staked by the user
+        staker.nftCount -= 1;
 
         // 5. transfer nft back to user
         nft.safeTransferFrom(address(this), user, nftId);

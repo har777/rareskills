@@ -44,4 +44,14 @@ describe("SaleToken", function () {
       );
     });
   });
+
+  describe("reverts", function () {
+    it("withdraw called by non-admin", async function () {
+      const { user1, saleToken } = await loadFixture(deploySaleToken);
+      const revertReason = `AccessControl: account ${user1.address.toLowerCase()} is missing role 0x0000000000000000000000000000000000000000000000000000000000000000`;
+      await expect(
+        saleToken.connect(user1).withdraw(user1.address)
+      ).to.be.revertedWith(revertReason);
+    });
+  });
 });

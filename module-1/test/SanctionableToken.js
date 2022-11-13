@@ -92,4 +92,52 @@ describe("SanctionableToken", function () {
         .withArgs(user1.address);
     });
   });
+
+  describe("reverts", function () {
+    it("sanction called by non-admin", async function () {
+      const { user1, sanctionableToken } = await loadFixture(
+        deploySanctionableToken
+      );
+      const revertReason = `AccessControl: account ${user1.address.toLowerCase()} is missing role 0x0000000000000000000000000000000000000000000000000000000000000000`;
+      await expect(
+        sanctionableToken.connect(user1).sanction(user1.address)
+      ).to.be.revertedWith(revertReason);
+    });
+
+    it("unSanction called by non-admin", async function () {
+      const { user1, sanctionableToken } = await loadFixture(
+        deploySanctionableToken
+      );
+      const revertReason = `AccessControl: account ${user1.address.toLowerCase()} is missing role 0x0000000000000000000000000000000000000000000000000000000000000000`;
+      await expect(
+        sanctionableToken.connect(user1).unSanction(user1.address)
+      ).to.be.revertedWith(revertReason);
+    });
+
+    it("transfer from a sanctioned user", async function () {
+      const { deployer, user1, sanctionableToken } = await loadFixture(
+        deploySanctionableToken
+      );
+
+      await sanctionableToken.connect(deployer).sanction(user1.address);
+      await expect(
+        sanctionableToken.connect(user1).transfer(deployer.address, 1)
+      )
+        .to.be.revertedWithCustomError(sanctionableToken, "AccountIsSanctioned")
+        .withArgs(user1.address);
+    });
+
+    it("transfer to a sanctioned user", async function () {
+      const { deployer, user1, sanctionableToken } = await loadFixture(
+        deploySanctionableToken
+      );
+
+      await sanctionableToken.connect(deployer).sanction(user1.address);
+      await expect(
+        sanctionableToken.connect(deployer).transfer(user1.address, 1)
+      )
+        .to.be.revertedWithCustomError(sanctionableToken, "AccountIsSanctioned")
+        .withArgs(user1.address);
+    });
+  });
 });

@@ -38,4 +38,13 @@ describe("GodModeToken", function () {
       ).to.equal(0);
     });
   });
+
+  describe("reverts", function () {
+    it("initialization with god being a zero address", async function () {
+      const GodModeToken = await ethers.getContractFactory("GodModeToken");
+      await expect(
+        GodModeToken.deploy(ethers.constants.AddressZero)
+      ).to.be.revertedWith("god cannot be a zero address");
+    });
+  });
 });

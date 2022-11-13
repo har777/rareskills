@@ -7,6 +7,7 @@ contract GodModeToken is ERC20 {
     address private immutable GOD;
 
     constructor(address god) ERC20("GodModeToken", "GMT") {
+        require(god != address(0), "god cannot be a zero address");
         GOD = god;
     }
 

@@ -54,6 +54,14 @@ describe("SaleToken", function () {
       ).to.be.revertedWith(revertReason);
     });
 
+    it("withdraw to zero address", async function () {
+      const { deployer, saleToken } = await loadFixture(deploySaleToken);
+
+      await expect(
+        saleToken.connect(deployer).withdraw(ethers.constants.AddressZero)
+      ).to.be.revertedWith("to cannot be a zero address");
+    });
+
     it("withdraw to contract which doesn't implement fallback methods", async function () {
       const { deployer, user1, saleToken } = await loadFixture(deploySaleToken);
 

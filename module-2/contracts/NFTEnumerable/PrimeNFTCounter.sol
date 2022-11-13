@@ -6,8 +6,6 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/math/Math.sol";
 
 contract PrimeNFTCounter {
-    uint256 private constant TOKENS_PER_DAY = 10e18;
-
     IERC721Enumerable public immutable nft;
 
     constructor(IERC721Enumerable _nft) {

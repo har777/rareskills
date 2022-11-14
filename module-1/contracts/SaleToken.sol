@@ -21,10 +21,10 @@ contract SaleToken is ERC20Capped, AccessControl {
         _mint(to, tokens);
     }
 
-    function withdraw(address payable to)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function withdraw(
+        address payable to
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        require(to != address(0), "to cannot be a zero address");
         uint256 amount = address(this).balance;
         (bool success, ) = to.call{value: amount}("");
         if (!success) {

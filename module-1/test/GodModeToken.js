@@ -1,6 +1,5 @@
-import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
-import { expect } from "chai";
-import { ethers } from "hardhat";
+const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
+const { expect } = require("chai");
 
 describe("GodModeToken", function () {
   async function deployGodModeToken() {
@@ -37,6 +36,15 @@ describe("GodModeToken", function () {
       expect(
         await godModeToken.allowance(user1.address, user2.address)
       ).to.equal(0);
+    });
+  });
+
+  describe("reverts", function () {
+    it("initialization with god being a zero address", async function () {
+      const GodModeToken = await ethers.getContractFactory("GodModeToken");
+      await expect(
+        GodModeToken.deploy(ethers.constants.AddressZero)
+      ).to.be.revertedWith("god cannot be a zero address");
     });
   });
 });

@@ -1,0 +1,32 @@
+{
+  "name": "rareskills",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "solhint": "solhint 'module-*/contracts/**/*.sol'",
+    "slither": "slither 'module-*/.'",
+    "fmt": "prettier --write './**/*.sol' './**/*.js' './**/*.ts' './**/*.json' './**/*.md' './**/*.yml'",
+    "prepare": "husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/har777/rareskills.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/har777/rareskills/issues"
+  },
+  "homepage": "https://github.com/har777/rareskills#readme",
+  "devDependencies": {
+    "husky": "^8.0.2",
+    "lint-staged": "^13.0.3",
+    "prettier": "^2.7.1",
+    "prettier-plugin-solidity": "^1.0.0-rc.1",
+    "solhint": "^3.3.7"
+  },
+  "lint-staged": {
+    "*.{js,md,sol,json,yml,ts}": "prettier --write"
+  }
+}

@@ -1,8 +1,6 @@
-import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
-import { expect } from "chai";
-import { ethers } from "hardhat";
-import { utils } from "ethers";
-import { time } from "@nomicfoundation/hardhat-network-helpers";
+const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
+const { expect } = require("chai");
+const { time } = require("@nomicfoundation/hardhat-network-helpers");
 
 describe("NFTStaker", function () {
   const PER_SECOND_TOKEN_REWARD = (10n * 10n ** 18n) / 86400n;
@@ -25,7 +23,7 @@ describe("NFTStaker", function () {
     await token
       .connect(deployer)
       .grantRole(
-        utils.keccak256(utils.toUtf8Bytes("MINTER_ROLE")),
+        ethers.utils.keccak256(ethers.utils.toUtf8Bytes("MINTER_ROLE")),
         staker.address
       );
 
@@ -173,8 +171,44 @@ describe("NFTStaker", function () {
     expect(await nft.ownerOf(1)).to.equal(user1.address);
     expect(await nft.ownerOf(2)).to.equal(staker.address);
 
+    await time.increase(86400);
     expect(await staker.connect(user1).getTotalClaimableTokens()).to.equal(
-      20n * 10n ** 18n + PER_SECOND_TOKEN_REWARD * 3n + 1n
+      30n * 10n ** 18n + PER_SECOND_TOKEN_REWARD * 3n + 1n
     );
+  });
+
+  describe("reverts", function () {
+    it("non minter tries to mint tokens", async function () {
+      const { user1, token } = await loadFixture(deployStaking);
+
+      const minterRole = ethers.utils.keccak256(
+        ethers.utils.toUtf8Bytes("MINTER_ROLE")
+      );
+      const revertReason = `AccessControl: account ${user1.address.toLowerCase()} is missing role ${minterRole}`;
+      await expect(
+        token.connect(user1).mint(user1.address, 1)
+      ).to.be.revertedWith(revertReason);
+    });
+
+    it("withdrawNFT of nft not being called by previous owner", async function () {
+      const { user1, staker } = await loadFixture(deployStaking);
+      await expect(staker.connect(user1).withdrawNFT(1)).to.be.revertedWith(
+        "NFT can only be withdrawn by its staker"
+      );
+    });
+
+    it("onERC721Received of staker called by address which is not the NFT initialised in the staker", async function () {
+      const { user1, staker } = await loadFixture(deployStaking);
+      await expect(
+        staker
+          .connect(user1)
+          .onERC721Received(
+            user1.address,
+            user1.address,
+            1,
+            ethers.utils.defaultAbiCoder.encode(["string"], [""])
+          )
+      ).to.be.revertedWith("Incorrect nft received");
+    });
   });
 });

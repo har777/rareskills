@@ -2,11 +2,10 @@
 pragma solidity 0.8.17;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./RewardToken.sol";
 import "./RewardNFT.sol";
 
-contract NFTStaker is IERC721Receiver, ReentrancyGuard {
+contract NFTStaker is IERC721Receiver {
     uint256 private constant TOKENS_PER_DAY = 10e18;
 
     RewardToken public immutable token;
@@ -54,26 +53,30 @@ contract NFTStaker is IERC721Receiver, ReentrancyGuard {
         return IERC721Receiver.onERC721Received.selector;
     }
 
-    function withdrawNFT(uint256 nftId) external nonReentrant {
+    // NOTE: I removed the reentrancy check here because I don't see how rerentrancy
+    // is possible here given the safeTransferFrom call is the last statement
+    // and any reentracy will already encounter updated state
+    // But this might be wrong. Recheck.
+    function withdrawNFT(uint256 nftId) external {
         address user = msg.sender;
         Staker storage staker = stakers[user];
 
-        // 1. move existing claimable tokens to unclaimed tokens field
-        _updateUnclaimedTokens(staker);
-
-        // 2. check if user is original owner
+        // 1. check if user is original owner
         require(
             nftIdToOriginalOwner[nftId] == user,
             "NFT can only be withdrawn by its staker"
         );
 
-        // 3. reduce count of nft's staked by the user
-        staker.nftCount -= 1;
-
-        // 4. set original owner of nft to address(0)
+        // 2. set original owner of nft to address(0)
         // I thought I could ignore this step because safeTransferFrom would revert if user tried to withdraw twice
         // but can cause issues if the user approves the nft again for the contract and make the nftCount state wrong
         nftIdToOriginalOwner[nftId] = address(0);
+
+        // 3. move existing claimable tokens to unclaimed tokens field
+        _updateUnclaimedTokens(staker);
+
+        // 4. reduce count of nft's staked by the user
+        staker.nftCount -= 1;
 
         // 5. transfer nft back to user
         nft.safeTransferFrom(address(this), user, nftId);
@@ -101,22 +104,18 @@ contract NFTStaker is IERC721Receiver, ReentrancyGuard {
         staker.lastUpdated = block.timestamp;
     }
 
-    function _getNewClaimableTokens(Staker memory staker)
-        internal
-        view
-        returns (uint256 newClaimableTokens)
-    {
+    function _getNewClaimableTokens(
+        Staker memory staker
+    ) internal view returns (uint256 newClaimableTokens) {
         uint256 secondsSinceLastClaim = block.timestamp - staker.lastUpdated;
         newClaimableTokens =
             (secondsSinceLastClaim * staker.nftCount * TOKENS_PER_DAY) /
             1 days;
     }
 
-    function _getTotalClaimableTokens(Staker memory staker)
-        internal
-        view
-        returns (uint256 totalUnclaimedTokens)
-    {
+    function _getTotalClaimableTokens(
+        Staker memory staker
+    ) internal view returns (uint256 totalUnclaimedTokens) {
         totalUnclaimedTokens =
             _getNewClaimableTokens(staker) +
             staker.unclaimedTokens;

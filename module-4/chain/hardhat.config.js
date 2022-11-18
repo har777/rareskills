@@ -12,13 +12,13 @@ module.exports = {
     },
   },
   networks: {
-    goerli: {
-      url: process.env.NETWORK_GOERLI_URL,
+    polygonMumbai: {
+      url: process.env.NETWORK_MUMBAI_URL,
     },
   },
   etherscan: {
-    apiKey: {
-      goerli: process.env.ETHERSCAN_GOERLI_API_KEY,
+    polygonMumbai: {
+      goerli: process.env.NETWORK_MUMBAI_URL,
     },
   },
 };

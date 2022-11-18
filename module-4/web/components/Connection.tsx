@@ -1,10 +1,13 @@
 import {useState} from "react";
 
+// @ts-ignore
 const Connection = ({ account, setAccount }) => {
   const [error, setError] = useState("");
 
   const connectMetamask = async () => {
+    // @ts-ignore
     if(window.ethereum) {
+      // @ts-ignore
       const accounts = await window.ethereum.request({method: "eth_requestAccounts"});
       setAccount(accounts[0]);
     } else {

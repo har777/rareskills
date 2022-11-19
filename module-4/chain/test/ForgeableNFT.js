@@ -20,7 +20,7 @@ describe("ForgeableNFT", function () {
   }
 
   describe("Forgeable NFT", function () {
-    it("Minter can mint an NFT for free", async function () {
+    it("Minter can mint", async function () {
       const { deployer, user1, forgeableNFT } = await loadFixture(
         deployForgeableNFT
       );
@@ -29,6 +29,39 @@ describe("ForgeableNFT", function () {
         await forgeableNFT.connect(deployer).mint(user1.address, 1, 2, "0x")
       ).to.be.ok;
       expect(await forgeableNFT.balanceOf(user1.address, 1)).to.equal(2);
+    });
+
+    it("Minter can burn", async function () {
+      const { deployer, user1, forgeableNFT } = await loadFixture(
+        deployForgeableNFT
+      );
+
+      await forgeableNFT.connect(deployer).mint(user1.address, 1, 2, "0x");
+      expect(await forgeableNFT.balanceOf(user1.address, 1)).to.equal(2);
+
+      expect(await forgeableNFT.connect(deployer).burn(user1.address, 1, 1)).to
+        .be.ok;
+      expect(await forgeableNFT.balanceOf(user1.address, 1)).to.equal(1);
+    });
+
+    it("Minter can burnBatch", async function () {
+      const { deployer, user1, forgeableNFT } = await loadFixture(
+        deployForgeableNFT
+      );
+
+      await forgeableNFT.connect(deployer).mint(user1.address, 1, 2, "0x");
+      expect(await forgeableNFT.balanceOf(user1.address, 1)).to.equal(2);
+
+      await forgeableNFT.connect(deployer).mint(user1.address, 6, 4, "0x");
+      expect(await forgeableNFT.balanceOf(user1.address, 6)).to.equal(4);
+
+      expect(
+        await forgeableNFT
+          .connect(deployer)
+          .burnBatch(user1.address, [1, 6], [1, 2])
+      ).to.be.ok;
+      expect(await forgeableNFT.balanceOf(user1.address, 1)).to.equal(1);
+      expect(await forgeableNFT.balanceOf(user1.address, 6)).to.equal(2);
     });
 
     it("Admin can setURI", async function () {
@@ -56,6 +89,28 @@ describe("ForgeableNFT", function () {
         forgeableNFT.connect(user1).mint(user1.address, 1, 2, "0x")
       ).to.be.revertedWith(revertReason);
       expect(await forgeableNFT.balanceOf(user1.address, 1)).to.equal(0);
+    });
+
+    it("non minter tries to burn", async function () {
+      const { user1, forgeableNFT } = await loadFixture(deployForgeableNFT);
+
+      const revertReason = `AccessControl: account ${user1.address.toLowerCase()} is missing role ${ethers.utils.keccak256(
+        ethers.utils.toUtf8Bytes("MINTER_ROLE")
+      )}`;
+      await expect(
+        forgeableNFT.connect(user1).burn(user1.address, 1, 1)
+      ).to.be.revertedWith(revertReason);
+    });
+
+    it("non minter tries to burnBatch", async function () {
+      const { user1, forgeableNFT } = await loadFixture(deployForgeableNFT);
+
+      const revertReason = `AccessControl: account ${user1.address.toLowerCase()} is missing role ${ethers.utils.keccak256(
+        ethers.utils.toUtf8Bytes("MINTER_ROLE")
+      )}`;
+      await expect(
+        forgeableNFT.connect(user1).burnBatch(user1.address, [1], [1])
+      ).to.be.revertedWith(revertReason);
     });
 
     it("non admin tries to setUri", async function () {

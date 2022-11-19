@@ -17,28 +17,31 @@
   },
   {
     "inputs": [],
-    "name": "forgeBlack",
+    "name": "InvalidId",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
+    "name": "burn",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "forgeCyan",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "forgePink",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "forgeYellow",
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
+    "name": "forge",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -58,21 +61,44 @@
   },
   {
     "inputs": [],
-    "name": "mintBlue",
+    "name": "isMintInCooldown",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "mintInCooldown",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
+    "name": "mint",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "mintGreen",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "mintRed",
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "oldId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "newId",
+        "type": "uint256"
+      }
+    ],
+    "name": "trade",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

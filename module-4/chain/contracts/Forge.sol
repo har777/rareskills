@@ -4,6 +4,7 @@ pragma solidity 0.8.17;
 import "./ForgeableNFT.sol";
 
 error InCooldown();
+error InvalidId();
 
 contract Forge {
     ForgeableNFT public immutable forgeableNFT;
@@ -21,68 +22,70 @@ contract Forge {
         _;
     }
 
-    function mintRed() external notInCooldown {
+    function isMintInCooldown() external view returns (bool mintInCooldown) {
+        mintInCooldown =
+            block.timestamp <= redGreenBlueLastMintedTime[msg.sender] + 60;
+    }
+
+    function mint(uint256 id) external notInCooldown {
+        if (id > 2) {
+            revert InvalidId();
+        }
         redGreenBlueLastMintedTime[msg.sender] = block.timestamp;
-        forgeableNFT.mint(msg.sender, 0, 1, "");
+        forgeableNFT.mint(msg.sender, id, 1, "");
     }
 
-    function mintGreen() external notInCooldown {
-        redGreenBlueLastMintedTime[msg.sender] = block.timestamp;
-        forgeableNFT.mint(msg.sender, 1, 1, "");
+    function burn(uint256 id) external {
+        if (id < 3 || id > 6) {
+            revert InvalidId();
+        }
+        forgeableNFT.burn(msg.sender, id, 1);
     }
 
-    function mintBlue() external notInCooldown {
-        redGreenBlueLastMintedTime[msg.sender] = block.timestamp;
-        forgeableNFT.mint(msg.sender, 2, 1, "");
+    function trade(uint256 oldId, uint256 newId) external {
+        if (newId > 2) {
+            revert InvalidId();
+        }
+        forgeableNFT.burn(msg.sender, oldId, 1);
+        forgeableNFT.mint(msg.sender, newId, 1, "");
     }
 
-    function forgeYellow() external {
-        uint256[] memory ids = new uint256[](2);
-        uint256[] memory quantities = new uint256[](2);
-        ids[0] = 0;
-        ids[1] = 1;
-        quantities[0] = 1;
-        quantities[1] = 1;
+    function forge(uint256 id) external {
+        if (id < 3 || id > 6) {
+            revert InvalidId();
+        }
+
+        uint256[] memory ids;
+        uint256[] memory quantities;
+
+        if (id == 6) {
+            ids = new uint256[](3);
+            quantities = new uint256[](3);
+            ids[0] = 0;
+            ids[1] = 1;
+            ids[2] = 2;
+            quantities[0] = 1;
+            quantities[1] = 1;
+            quantities[2] = 1;
+        } else {
+            quantities = new uint256[](2);
+            quantities[0] = 1;
+            quantities[1] = 1;
+
+            ids = new uint256[](2);
+            if (id == 3) {
+                ids[0] = 0;
+                ids[1] = 1;
+            } else if (id == 4) {
+                ids[0] = 1;
+                ids[1] = 2;
+            } else {
+                ids[0] = 0;
+                ids[1] = 2;
+            }
+        }
 
         forgeableNFT.burnBatch(msg.sender, ids, quantities);
-        forgeableNFT.mint(msg.sender, 3, 1, "");
-    }
-
-    function forgeCyan() external {
-        uint256[] memory ids = new uint256[](2);
-        uint256[] memory quantities = new uint256[](2);
-        ids[0] = 1;
-        ids[1] = 2;
-        quantities[0] = 1;
-        quantities[1] = 1;
-
-        forgeableNFT.burnBatch(msg.sender, ids, quantities);
-        forgeableNFT.mint(msg.sender, 4, 1, "");
-    }
-
-    function forgePink() external {
-        uint256[] memory ids = new uint256[](2);
-        uint256[] memory quantities = new uint256[](2);
-        ids[0] = 0;
-        ids[1] = 2;
-        quantities[0] = 1;
-        quantities[1] = 1;
-
-        forgeableNFT.burnBatch(msg.sender, ids, quantities);
-        forgeableNFT.mint(msg.sender, 5, 1, "");
-    }
-
-    function forgeBlack() external {
-        uint256[] memory ids = new uint256[](3);
-        uint256[] memory quantities = new uint256[](3);
-        ids[0] = 0;
-        ids[1] = 1;
-        ids[2] = 2;
-        quantities[0] = 1;
-        quantities[1] = 1;
-        quantities[2] = 1;
-
-        forgeableNFT.burnBatch(msg.sender, ids, quantities);
-        forgeableNFT.mint(msg.sender, 5, 1, "");
+        forgeableNFT.mint(msg.sender, id, 1, "");
     }
 }

@@ -3,9 +3,8 @@ pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
-import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Burnable.sol";
 
-contract ForgeableNFT is ERC1155, AccessControl, ERC1155Burnable {
+contract ForgeableNFT is ERC1155, AccessControl {
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
     uint256 public constant RED = 0;
@@ -32,6 +31,22 @@ contract ForgeableNFT is ERC1155, AccessControl, ERC1155Burnable {
         bytes memory data
     ) external onlyRole(MINTER_ROLE) {
         _mint(account, id, amount, data);
+    }
+
+    function burn(
+        address account,
+        uint256 id,
+        uint256 value
+    ) external onlyRole(MINTER_ROLE) {
+        _burn(account, id, value);
+    }
+
+    function burnBatch(
+        address account,
+        uint256[] memory ids,
+        uint256[] memory values
+    ) external onlyRole(MINTER_ROLE) {
+        _burnBatch(account, ids, values);
     }
 
     // The following functions are overrides required by Solidity.

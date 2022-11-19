@@ -13,10 +13,12 @@ export default function Home() {
   const [counts, setCounts] = useState({});
   const [forgeableNft, setForgeableNft] = useState();
   const [forge, setForge] = useState();
+  const [mintInCooldownCheckRunning, setMintInCooldownCheckRunning] = useState(false);
+  const [mintInCooldown, setMintInCooldown] = useState(true);
   const [loading, setLoading] = useState(true);
 
-  const forgeableNftAddress = "0x0165878A594ca255338adfa4d48449f69242Eb8F";
-  const forgeAddress = "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853";
+  const forgeableNftAddress = "0x3Aa5ebB10DC797CAC828524e59A333d0A371443c";
+  const forgeAddress = "0xc6e7DF5E7b4f2A278906862b61205850344D4e7d";
 
   const nftIds = [0, 1, 2, 3, 4, 5, 6];
 
@@ -78,9 +80,22 @@ export default function Home() {
     );
   }
 
+  const checkMintInCooldown = async () => {
+    if(forge) {
+      // @ts-ignore
+      const mintInCooldown = await forge.isMintInCooldown();
+      setMintInCooldown(mintInCooldown);
+    }
+  }
+
   const refresh = async () => {
     refreshEthBalance();
     refreshCounts();
+    checkMintInCooldown();
+    if(!mintInCooldownCheckRunning) {
+      setInterval(checkMintInCooldown, 1000);
+      setMintInCooldownCheckRunning(true);
+    }
   }
 
   if(!account) {
@@ -107,7 +122,7 @@ export default function Home() {
       </div>
       <div className="grid grid-cols-3 gap-4 mt-2">
         {nftIds.map((nftId, idx) => {
-          return <NFT key={idx} nftId={nftId} counts={counts} refresh={refresh} setLoading={setLoading} forgeableNft={forgeableNft} forge={forge} />
+          return <NFT key={idx} nftId={nftId} counts={counts} refresh={refresh} setLoading={setLoading} forgeableNft={forgeableNft} forge={forge} mintInCooldown={mintInCooldown} />
         })}
       </div>
     </div>

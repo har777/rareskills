@@ -1,8 +1,23 @@
 import Image from "next/image";
+import {useEffect, useState} from "react";
 
 // @ts-ignore
-const NFT = ({ nftId, counts, setLoading, refresh, forge }) => {
-  const imageUrl = `https://gateway.pinata.cloud/ipfs/QmQuLt2abVQsCFNChLuWT6o7SEoBanDi3s8LPx2UAxy21W/${nftId}.png`
+const NFT = ({ nftId, counts, setLoading, refresh, forgeableNft, forge }) => {
+  const [imageUrl, setImageUrl] = useState("");
+  const [nftLoading, setNftLoading] = useState(true);
+
+  useEffect(() => {
+    async function getImageUrl() {
+      if(!imageUrl && !isNaN(nftId) && forgeableNft) {
+        setNftLoading(true);
+        const baseUrl = await forgeableNft.uri(nftId);
+        const imageUrl = baseUrl.replace("{id}", nftId);
+        setImageUrl(imageUrl);
+        setNftLoading(false);
+      }
+    }
+    getImageUrl();
+  }, [nftId, forgeableNft])
 
   const isBaseToken = nftId == 0 || nftId == 1 || nftId == 2;
   const count = counts[nftId];
@@ -68,6 +83,16 @@ const NFT = ({ nftId, counts, setLoading, refresh, forge }) => {
   const destroyOnClick = async () => {
     await refresh();
   };
+
+  if(nftLoading) {
+    return (
+      <div className="rounded border-2 border-slate-600 p-1">
+        <div className="flex justify-center">
+          Loading
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="rounded border-2 border-slate-600 p-1">

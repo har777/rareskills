@@ -14,7 +14,7 @@ async function main() {
     forge.address
   );
   await forgeableNFT.setURI(
-    "https://gateway.pinata.cloud/ipfs/QmQuLt2abVQsCFNChLuWT6o7SEoBanDi3s8LPx2UAxy21W/{id}.png"
+    "ipfs://QmQ1p8VZyLitemj4fK4DYoo4eY2RenSCVkWUfjp5bwBfjb/{id}"
   );
 
   console.log(`ForgeableNFT ${forgeableNFT.address}`);

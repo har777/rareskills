@@ -16,13 +16,13 @@ contract Forge {
     }
 
     modifier notInCooldown() {
-        if (block.timestamp <= redGreenBlueLastMintedTime[msg.sender] + 60) {
+        if (isMintInCooldown()) {
             revert InCooldown();
         }
         _;
     }
 
-    function isMintInCooldown() external view returns (bool mintInCooldown) {
+    function isMintInCooldown() public view returns (bool mintInCooldown) {
         mintInCooldown =
             block.timestamp <= redGreenBlueLastMintedTime[msg.sender] + 60;
     }
@@ -79,7 +79,7 @@ contract Forge {
             } else if (id == 4) {
                 ids[0] = 1;
                 ids[1] = 2;
-            } else {
+            } else if (id == 5) {
                 ids[0] = 0;
                 ids[1] = 2;
             }

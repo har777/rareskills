@@ -46,7 +46,13 @@ describe("Forge", function () {
 
       await forge.connect(user1).mint(0);
       expect(await forge.connect(user1).isMintInCooldown()).to.equal(true);
-      await time.increase(ONE_MIN + 1);
+      await time.increase(ONE_MIN - 1);
+      expect(await forge.connect(user1).isMintInCooldown()).to.equal(true);
+      await time.increase(1);
+      expect(await forge.connect(user1).isMintInCooldown()).to.equal(true);
+      await time.increase(1);
+      expect(await forge.connect(user1).isMintInCooldown()).to.equal(false);
+      await time.increase(1);
       expect(await forge.connect(user1).isMintInCooldown()).to.equal(false);
     });
   });

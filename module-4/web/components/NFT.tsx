@@ -2,15 +2,16 @@ import Image from "next/image";
 import {useEffect, useState} from "react";
 
 // @ts-ignore
-const NFT = ({ nftId, counts, setLoading, refresh, forgeableNft, forge, mintInCooldown }) => {
+const NFT = ({ nftId, counts, refresh, forgeableNft, forge, mintInCooldown, disableButtons, setDisableButtons }) => {
   const [imageUrl, setImageUrl] = useState("");
-  const [nftLoading, setNftLoading] = useState(true);
+  const [nftLoading, setNftLoading] = useState("");
   const [tradeForId, setTradeForId] = useState(0);
 
   useEffect(() => {
     async function getImageUrl() {
       if(!imageUrl && !isNaN(nftId) && forgeableNft) {
-        setNftLoading(true);
+        setDisableButtons(true);
+        setNftLoading("Getting metadata");
         const metadataIpfs = await forgeableNft.uri(nftId);
         const metadataUrl = metadataIpfs.replace("ipfs://", "https://ipfs.io/ipfs/").replace("{id}", nftId);
         const metadata = await fetch(metadataUrl);
@@ -18,7 +19,8 @@ const NFT = ({ nftId, counts, setLoading, refresh, forgeableNft, forge, mintInCo
         const imageIpfs = (await metadata.json()).image;
         const imageUrl = imageIpfs.replace("ipfs://", "https://ipfs.io/ipfs/");
         setImageUrl(imageUrl);
-        setNftLoading(false);
+        setDisableButtons(false);
+        setNftLoading("");
       }
     }
     getImageUrl();
@@ -35,30 +37,34 @@ const NFT = ({ nftId, counts, setLoading, refresh, forgeableNft, forge, mintInCo
   const count = counts[nftId];
 
   const mintAvailable = isBaseToken;
-  const mintDisabled = mintInCooldown;
+  const mintDisabled = mintInCooldown || disableButtons;
   const mintOnClick = async () => {
-    setLoading(true);
+    setDisableButtons(true);
+    setNftLoading("Minting");
     const transaction = await forge.mint(nftId);
     await transaction.wait();
+    setDisableButtons(false);
+    setNftLoading("");
     await refresh();
-    setLoading(false);
   };
 
   const tradeAvailable = true;
-  const tradeDisabled = count == 0;
+  const tradeDisabled = count == 0 || disableButtons;
   const tradeOnClick = async () => {
     if(tradeForId) {
-      setLoading(true);
+      setDisableButtons(true);
+      setNftLoading("Trading");
       const transaction = await forge.trade(nftId, tradeForId);
       await transaction.wait();
+      setDisableButtons(false);
+      setNftLoading("");
       await refresh();
-      setLoading(false);
     }
   };
 
   const forgeAvailable = !isBaseToken;
-  let forgeDisabled = true;
-  if(forgeAvailable) {
+  let forgeDisabled = disableButtons;
+  if(!disableButtons) {
     if(nftId == 3) {
       forgeDisabled = counts[0] === 0 || counts[1] === 0;
     } else if(nftId == 4) {
@@ -69,29 +75,34 @@ const NFT = ({ nftId, counts, setLoading, refresh, forgeableNft, forge, mintInCo
       forgeDisabled = counts[0] === 0 || counts[1] === 0 || counts[2] === 0;
     }
   }
+
   const forgeOnClick = async () => {
-    setLoading(true);
+    setDisableButtons(true);
+    setNftLoading("Forging");
     const transaction = await forge.forge(nftId);
     await transaction.wait();
+    setDisableButtons(false);
+    setNftLoading("");
     await refresh();
-    setLoading(false);
   };
 
   const destroyAvailable = !isBaseToken;
-  const destroyDisabled = count == 0;
+  const destroyDisabled = count == 0 || disableButtons;
   const destroyOnClick = async () => {
-    setLoading(true);
+    setDisableButtons(true);
+    setNftLoading("Destroying");
     const transaction = await forge.burn(nftId);
     await transaction.wait();
+    setDisableButtons(false);
+    setNftLoading("");
     await refresh();
-    setLoading(false);
   };
 
   if(nftLoading) {
     return (
-      <div className="rounded border-2 border-gray-400 p-1">
+      <div className="rounded border-2 border-gray-400 p-4 pb-1 hover:border-gray-900">
         <div className="flex justify-center">
-          Loading
+          {nftLoading}
         </div>
       </div>
     )

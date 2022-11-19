@@ -16,6 +16,7 @@ export default function Home() {
   const [mintInCooldownCheckRunning, setMintInCooldownCheckRunning] = useState(false);
   const [mintInCooldown, setMintInCooldown] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [disableButtons, setDisableButtons] = useState(false);
 
   const forgeableNftAddress = "0x8102d6B74dD030a4CC30F9c17128f50A2779d89a";
   const forgeAddress = "0x60D9423FD4D675e1C29115CeF3690Dfe8cF47cDC";
@@ -119,10 +120,11 @@ export default function Home() {
       <div className="flex flex-col rounded border-2 border-gray-400 p-1">
         <div>Connected to {account}</div>
         <div>MATIC balance: {ethBalance}</div>
+        <a className="text-sky-800" href="https://testnets.opensea.io/collection/unidentified-contract-up2buxeivo" target="_blank" rel="noreferrer">Opensea</a>
       </div>
       <div className="grid grid-cols-3 gap-4 mt-2">
         {nftIds.map((nftId, idx) => {
-          return <NFT key={idx} nftId={nftId} counts={counts} refresh={refresh} setLoading={setLoading} forgeableNft={forgeableNft} forge={forge} mintInCooldown={mintInCooldown} />
+          return <NFT key={idx} nftId={nftId} counts={counts} refresh={refresh} forgeableNft={forgeableNft} forge={forge} mintInCooldown={mintInCooldown} disableButtons={disableButtons} setDisableButtons={setDisableButtons} />
         })}
       </div>
     </div>

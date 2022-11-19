@@ -17,8 +17,8 @@ export default function Home() {
   const [mintInCooldown, setMintInCooldown] = useState(true);
   const [loading, setLoading] = useState(true);
 
-  const forgeableNftAddress = "0xa85233C63b9Ee964Add6F2cffe00Fd84eb32338f";
-  const forgeAddress = "0x4A679253410272dd5232B3Ff7cF5dbB88f295319";
+  const forgeableNftAddress = "0x8102d6B74dD030a4CC30F9c17128f50A2779d89a";
+  const forgeAddress = "0x60D9423FD4D675e1C29115CeF3690Dfe8cF47cDC";
 
   const nftIds = [0, 1, 2, 3, 4, 5, 6];
 
@@ -118,7 +118,7 @@ export default function Home() {
     <div className="m-auto">
       <div className="flex flex-col rounded border-2 border-gray-400 p-1">
         <div>Connected to {account}</div>
-        <div>ETH balance: {ethBalance}</div>
+        <div>MATIC balance: {ethBalance}</div>
       </div>
       <div className="grid grid-cols-3 gap-4 mt-2">
         {nftIds.map((nftId, idx) => {

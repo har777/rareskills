@@ -8,9 +8,9 @@ import NFT from "../components/NFT";
 export default function Home() {
   const [walletConnected, setWalletConnected] = useState(false);
 
-  const [account, setAccount] = useState("");
   const [provider, setProvider] = useState();
   const [signer, setSigner] = useState();
+  const [account, setAccount] = useState("");
   const [ethBalance, setEthBalance] = useState("");
   const [counts, setCounts] = useState({});
   const [forgeableNft, setForgeableNft] = useState();
@@ -34,10 +34,17 @@ export default function Home() {
     return () => {};
   }, [signer]);
 
-  const handleAccountConnect = async (account: string) => {
-    setLoading(true);
+  useEffect(() => {
+    if(walletConnected) {
+      setLoading(true);
+      handleWalletConnected();
+      setLoading(false);
+    }
+    return () => {};
+  }, [walletConnected]);
 
-    setAccount(account);
+  const handleWalletConnected = async () => {
+    setLoading(true);
 
     // @ts-ignore
     const provider: any = new ethers.providers.Web3Provider(window.ethereum);
@@ -57,6 +64,12 @@ export default function Home() {
     setLoading(false);
   }
 
+  const refreshAccount = async () => {
+    // @ts-ignore
+    const address = await signer.getAddress();
+    setAccount(address);
+  }
+
   const refreshEthBalance = async () => {
     // @ts-ignore
     const address = await signer.getAddress();
@@ -67,6 +80,8 @@ export default function Home() {
   }
 
   const refreshCounts = async () => {
+    // @ts-ignore
+    const account = await signer.getAddress();
     const addresses = [account, account, account, account, account, account, account];
     // @ts-ignore
     const balances = await forgeableNft.balanceOfBatch(addresses, nftIds);
@@ -101,10 +116,10 @@ export default function Home() {
     }
   }
 
-  if(!account) {
+  if(!walletConnected) {
     return (
       <div className="m-auto">
-        <Connection account={account} setAccount={handleAccountConnect} />
+        <Connection setWalletConnected={setWalletConnected} />
       </div>
     )
   }

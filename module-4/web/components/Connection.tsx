@@ -1,15 +1,15 @@
 import {useState} from "react";
 
 // @ts-ignore
-const Connection = ({ setWalletConnected }) => {
+const Connection = ({ account, setAccount }) => {
   const [error, setError] = useState("");
 
   const connectWallet = async () => {
     // @ts-ignore
     if(window.ethereum) {
       // @ts-ignore
-      await window.ethereum.request({method: "eth_requestAccounts"});
-      setWalletConnected(true);
+      const accounts = await window.ethereum.request({method: "eth_requestAccounts"});
+      setAccount(accounts[0]);
     } else {
       setError("You need to install metamask");
     }

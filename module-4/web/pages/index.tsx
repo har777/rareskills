@@ -101,10 +101,10 @@ export default function Home() {
     }
   }
 
-  if(!walletConnected) {
+  if(!account) {
     return (
       <div className="m-auto">
-        <Connection walletConnected={walletConnected} setWalletConnected={setWalletConnected} />
+        <Connection account={account} setAccount={handleAccountConnect} />
       </div>
     )
   }

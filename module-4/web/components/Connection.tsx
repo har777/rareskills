@@ -1,15 +1,15 @@
 import {useState} from "react";
 
 // @ts-ignore
-const Connection = ({ account, setAccount }) => {
+const Connection = ({ setWalletConnected }) => {
   const [error, setError] = useState("");
 
-  const connectMetamask = async () => {
+  const connectWallet = async () => {
     // @ts-ignore
     if(window.ethereum) {
       // @ts-ignore
-      const accounts = await window.ethereum.request({method: "eth_requestAccounts"});
-      setAccount(accounts[0]);
+      await window.ethereum.request({method: "eth_requestAccounts"});
+      setWalletConnected(true);
     } else {
       setError("You need to install metamask");
     }
@@ -17,9 +17,9 @@ const Connection = ({ account, setAccount }) => {
 
   return (
     <div>
-      <button className="rounded border-2 border-lime-600 p-1" onClick={connectMetamask}>Connect Metamask</button>
+      <button className="rounded bg-sky-800 text-white p-2" onClick={connectWallet}>Connect Wallet</button>
       {error && (
-        <div className="rounded border-2 border-rose-600 p-1">
+        <div className="rounded bg-sky-800 text-white p-2">
           {error}
         </div>
       )}

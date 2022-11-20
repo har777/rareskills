@@ -6,6 +6,8 @@ import ForgeABI from "../abi/forge.json";
 import NFT from "../components/NFT";
 
 export default function Home() {
+  const [walletConnected, setWalletConnected] = useState(false);
+
   const [account, setAccount] = useState("");
   const [provider, setProvider] = useState();
   const [signer, setSigner] = useState();
@@ -99,10 +101,10 @@ export default function Home() {
     }
   }
 
-  if(!account) {
+  if(!walletConnected) {
     return (
       <div className="m-auto">
-        <Connection account={account} setAccount={handleAccountConnect} />
+        <Connection walletConnected={walletConnected} setWalletConnected={setWalletConnected} />
       </div>
     )
   }

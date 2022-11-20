@@ -41,8 +41,12 @@ const NFT = ({ nftId, counts, refresh, forgeableNft, forge, mintInCooldown, disa
   const mintOnClick = async () => {
     setDisableButtons(true);
     setNftLoading("Minting");
-    const transaction = await forge.mint(nftId);
-    await transaction.wait();
+    try {
+      const transaction = await forge.mint(nftId);
+      await transaction.wait();
+    } catch(err) {
+      console.log(`Mint transaction for id: ${nftId} rejected`);
+    }
     setDisableButtons(false);
     setNftLoading("");
     await refresh();
@@ -54,8 +58,12 @@ const NFT = ({ nftId, counts, refresh, forgeableNft, forge, mintInCooldown, disa
     if(tradeForId) {
       setDisableButtons(true);
       setNftLoading("Trading");
-      const transaction = await forge.trade(nftId, tradeForId);
-      await transaction.wait();
+      try {
+        const transaction = await forge.trade(nftId, tradeForId);
+        await transaction.wait(); 
+      } catch (error) {
+        console.log(`Trade transaction for id: ${nftId} rejected`);
+      }
       setDisableButtons(false);
       setNftLoading("");
       await refresh();
@@ -79,8 +87,12 @@ const NFT = ({ nftId, counts, refresh, forgeableNft, forge, mintInCooldown, disa
   const forgeOnClick = async () => {
     setDisableButtons(true);
     setNftLoading("Forging");
-    const transaction = await forge.forge(nftId);
-    await transaction.wait();
+    try {
+      const transaction = await forge.forge(nftId);
+      await transaction.wait();   
+    } catch (error) {
+      console.log(`Forge transaction for id: ${nftId} rejected`);
+    }
     setDisableButtons(false);
     setNftLoading("");
     await refresh();
@@ -91,8 +103,12 @@ const NFT = ({ nftId, counts, refresh, forgeableNft, forge, mintInCooldown, disa
   const destroyOnClick = async () => {
     setDisableButtons(true);
     setNftLoading("Destroying");
-    const transaction = await forge.burn(nftId);
-    await transaction.wait();
+    try {
+      const transaction = await forge.burn(nftId);
+      await transaction.wait();   
+    } catch (error) {
+      console.log(`Destroy transaction for id: ${nftId} rejected`);
+    }
     setDisableButtons(false);
     setNftLoading("");
     await refresh();

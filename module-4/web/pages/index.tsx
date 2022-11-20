@@ -119,23 +119,6 @@ export default function Home() {
     };
   }, [forge]);
 
-
-  if(!walletConnected) {
-    return (
-      <div className="m-auto">
-        <Connection setWalletConnected={setWalletConnected} />
-      </div>
-    )
-  }
-
-  if(stageOneLoading || stageTwoLoading) {
-    return (
-      <div className="m-auto">
-        Loading
-      </div>
-    )
-  }
-
   const onWriteAction = async () => {
       // @ts-ignore
       const balance = await provider.getBalance(account);
@@ -159,6 +142,22 @@ export default function Home() {
       );
 
       setDisableButtons(false);
+  }
+
+  if(!walletConnected) {
+    return (
+      <div className="m-auto">
+        <Connection setWalletConnected={setWalletConnected} />
+      </div>
+    )
+  }
+
+  if(stageOneLoading || stageTwoLoading) {
+    return (
+      <div className="m-auto">
+        Loading
+      </div>
+    )
   }
 
   return (

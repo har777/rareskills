@@ -9,7 +9,7 @@ error InvalidId();
 contract Forge {
     ForgeableNFT public immutable forgeableNFT;
 
-    mapping(address => uint256) redGreenBlueLastMintedTime;
+    mapping(address => uint256) public redGreenBlueLastMintedTime;
 
     constructor(ForgeableNFT _forgeableNFT) {
         forgeableNFT = _forgeableNFT;

@@ -20,7 +20,9 @@ contract ForgeableNFT is ERC1155, AccessControl {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
     }
 
-    function setURI(string memory newuri) public onlyRole(DEFAULT_ADMIN_ROLE) {
+    function setURI(
+        string memory newuri
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         _setURI(newuri);
     }
 

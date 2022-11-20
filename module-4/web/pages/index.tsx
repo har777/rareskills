@@ -28,6 +28,7 @@ export default function Home() {
   useEffect(() => {
     if(signer) {
       setLoading(true);
+      refreshAccount();
       refresh();
       setLoading(false);
     }

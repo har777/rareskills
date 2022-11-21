@@ -54,8 +54,8 @@ const Connection = ({ setWalletConnected }) => {
 
       // If network is changed get wallet to unconnected again
       // @ts-ignore
-      window.ethereum.on('networkChanged', function (networkId) {
-        if(networkId === 8001) {
+      window.ethereum.on("networkChanged", function (networkId) {
+        if(networkId === "80001") {
           setWalletConnected(true);
         } else {
           setWalletConnected(false);

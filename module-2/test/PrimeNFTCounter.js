@@ -2,7 +2,7 @@ const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
 const { expect } = require("chai");
 
 describe("PrimeNFTCounter", function () {
-  async function deploySimpleNFT() {
+  async function deployCounter() {
     const [deployer, user1, user2] = await ethers.getSigners();
 
     const EnumerableNFT = await ethers.getContractFactory("EnumerableNFT");
@@ -18,9 +18,7 @@ describe("PrimeNFTCounter", function () {
 
   describe("Prime NFT Counter", function () {
     it("Max supply is 20", async function () {
-      const { user1, user2, enumerableNFT } = await loadFixture(
-        deploySimpleNFT
-      );
+      const { user1, user2, enumerableNFT } = await loadFixture(deployCounter);
 
       for (let i = 0; i < 10; i++) {
         await enumerableNFT.connect(user1).safeMint();
@@ -37,7 +35,7 @@ describe("PrimeNFTCounter", function () {
 
     it("Prime counter works", async function () {
       const { deployer, user1, user2, enumerableNFT, primeNFTCounter } =
-        await loadFixture(deploySimpleNFT);
+        await loadFixture(deployCounter);
 
       for (let i = 0; i < 10; i++) {
         await enumerableNFT.connect(user1).safeMint();
@@ -55,7 +53,7 @@ describe("PrimeNFTCounter", function () {
     });
 
     it("EnumerableNFT supportsInterface", async function () {
-      const { enumerableNFT } = await loadFixture(deploySimpleNFT);
+      const { enumerableNFT } = await loadFixture(deployCounter);
       expect(await enumerableNFT.supportsInterface("0x80ac58cd")).to.equal(
         true
       );

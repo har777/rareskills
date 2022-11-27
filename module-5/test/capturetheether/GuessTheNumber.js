@@ -2,7 +2,7 @@ const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
 const { expect } = require("chai");
 
 describe("Capture The Ether - GuessTheNumberChallenge", function () {
-  async function deployToken() {
+  async function deployContract() {
     const [deployer] = await ethers.getSigners();
 
     const GuessTheNumberChallenge = await ethers.getContractFactory(
@@ -19,7 +19,7 @@ describe("Capture The Ether - GuessTheNumberChallenge", function () {
   describe("Exploit", function () {
     it("Successful guess", async function () {
       const { deployer, guessTheNumberChallenge } = await loadFixture(
-        deployToken
+        deployContract
       );
 
       expect(await guessTheNumberChallenge.isComplete()).to.equal(false);

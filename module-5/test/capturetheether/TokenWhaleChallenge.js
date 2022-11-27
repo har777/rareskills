@@ -1,7 +1,7 @@
 const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
 const { expect } = require("chai");
 
-describe("Capture The Ether - TokenSale", function () {
+describe("Capture The Ether - TokenWhale", function () {
   async function deployToken() {
     const [_, user1, user2] = await ethers.getSigners();
 

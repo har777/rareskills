@@ -1,6 +1,8 @@
-const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
+const {
+  loadFixture,
+  time,
+} = require("@nomicfoundation/hardhat-network-helpers");
 const { expect } = require("chai");
-const { time } = require("@nomicfoundation/hardhat-network-helpers");
 
 describe("Forge", function () {
   const ONE_MIN = 60;

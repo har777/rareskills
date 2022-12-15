@@ -3,8 +3,6 @@ const { expect } = require("chai");
 
 describe("Ethernaut - Twenty", function () {
   async function deployContracts() {
-    const [deployer] = await ethers.getSigners();
-
     const EthernautTwentyOneShop = await ethers.getContractFactory(
       "EthernautTwentyOneShop"
     );
@@ -19,12 +17,12 @@ describe("Ethernaut - Twenty", function () {
     );
     await ethernautTwentyOneBuyer.deployed();
 
-    return { deployer, ethernautTwentyOneShop, ethernautTwentyOneBuyer };
+    return { ethernautTwentyOneShop, ethernautTwentyOneBuyer };
   }
 
   describe("Exploit", function () {
     it("Buyer can buy at 0 price", async function () {
-      const { deployer, ethernautTwentyOneShop, ethernautTwentyOneBuyer } =
+      const { ethernautTwentyOneShop, ethernautTwentyOneBuyer } =
         await loadFixture(deployContracts);
 
       expect(await ethernautTwentyOneShop.price()).to.equal(100);

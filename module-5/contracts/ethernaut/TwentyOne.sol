@@ -20,7 +20,7 @@ contract EthernautTwentyOneShop {
 }
 
 contract EthernautTwentyOneBuyer is IEthernautTwentyOneBuyer {
-    EthernautTwentyOneShop private shop;
+    EthernautTwentyOneShop private immutable shop;
 
     constructor(address _address) {
         shop = EthernautTwentyOneShop(_address);
@@ -45,7 +45,7 @@ contract EthernautTwentyOneBuyer is IEthernautTwentyOneBuyer {
 // The solution lies in the fact that we get to:
 // 1. implement the price() method for the buyer
 // 2. the shop has a buy() method which calls price() twice:
-//    a. once to do if the price is acceptable for the shop
+//    a. once to check if the price is acceptable for the shop
 //    b. setting the actual price paid
 // See how the shop sets the isSold state variable between the above 2 events
 // So all we need to do is implement the price() view method such that

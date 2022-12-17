@@ -1,7 +1,7 @@
 const { ethers } = require("hardhat");
 const { expect } = require("chai");
 
-describe("[Challenge] Naive receiver", function () {
+describe("Damn Vulnerable DeFi - Naive receiver", function () {
   let deployer, user, attacker;
 
   // Pool has 1000 ETH in balance

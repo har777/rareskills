@@ -23,7 +23,7 @@ describe("Damn Vulnerable DeFi - Free Rider", function () {
 
   before(async function () {
     /** SETUP SCENARIO - NO NEED TO CHANGE ANYTHING HERE */
-    [deployer, attacker, buyer] = await ethers.getSigners();
+    [_, _, _, deployer, attacker, buyer] = await ethers.getSigners();
 
     // Attacker starts with little ETH balance
     await ethers.provider.send("hardhat_setBalance", [

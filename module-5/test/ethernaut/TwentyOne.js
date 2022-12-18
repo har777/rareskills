@@ -1,7 +1,7 @@
 const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
 const { expect } = require("chai");
 
-describe("Ethernaut - Twenty", function () {
+describe("Ethernaut - Twenty One", function () {
   async function deployContracts() {
     const EthernautTwentyOneShop = await ethers.getContractFactory(
       "EthernautTwentyOneShop"

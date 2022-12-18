@@ -1,7 +1,7 @@
 const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
 const { expect } = require("chai");
 
-describe("Ethernaut - Twenty", function () {
+describe("Ethernaut - Eleven", function () {
   async function deployContracts() {
     const EthernautElevenElevator = await ethers.getContractFactory(
       "EthernautElevenElevator"

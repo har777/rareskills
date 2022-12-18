@@ -1,7 +1,7 @@
 const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
 const { expect } = require("chai");
 
-describe("Ethernaut - Twenty", function () {
+describe("Ethernaut - Ten", function () {
   async function deployContracts() {
     const [exploiter, user1, user2] = await ethers.getSigners();
 
@@ -42,11 +42,9 @@ describe("Ethernaut - Twenty", function () {
       await ethernautTwentyReentrance
         .connect(user1)
         .donate(user1.address, { value: ethers.constants.WeiPerEther });
-      await ethernautTwentyReentrance
-        .connect(user2)
-        .donate(user2.address, {
-          value: 2n * BigInt(ethers.constants.WeiPerEther),
-        });
+      await ethernautTwentyReentrance.connect(user2).donate(user2.address, {
+        value: 2n * BigInt(ethers.constants.WeiPerEther),
+      });
 
       // exploiter donates 1 ETH under ethernautTwentyExploit contracts name
       await ethernautTwentyReentrance

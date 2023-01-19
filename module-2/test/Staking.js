@@ -1,6 +1,8 @@
-const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
+const {
+  loadFixture,
+  time,
+} = require("@nomicfoundation/hardhat-network-helpers");
 const { expect } = require("chai");
-const { time } = require("@nomicfoundation/hardhat-network-helpers");
 
 describe("NFTStaker", function () {
   const PER_SECOND_TOKEN_REWARD = (10n * 10n ** 18n) / 86400n;

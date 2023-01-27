@@ -3,7 +3,7 @@ pragma solidity ^0.5.0;
 
 import "./Ownable-05.sol";
 
-contract AlienCodex is Ownable {
+contract EthernautNineteenAlienCodex is Ownable {
     bool public contact;
     bytes32[] public codex;
 
@@ -28,3 +28,8 @@ contract AlienCodex is Ownable {
         codex[i] = _content;
     }
 }
+
+// https://ethernaut.openzeppelin.com/level/0x40055E69E7EB12620c8CCBCCAb1F187883301c30
+
+// Solution
+//

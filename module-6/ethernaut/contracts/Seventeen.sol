@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract Recovery {
+contract EthernautSeventeenRecovery {
     //generate tokens
     function generateToken(string memory _name, uint256 _initialSupply) public {
-        new SimpleToken(_name, msg.sender, _initialSupply);
+        new EthernautSeventeenSimpleToken(_name, msg.sender, _initialSupply);
     }
 }
 
-contract SimpleToken {
+contract EthernautSeventeenSimpleToken {
     string public name;
     mapping(address => uint) public balances;
 
@@ -35,3 +35,8 @@ contract SimpleToken {
         selfdestruct(_to);
     }
 }
+
+// https://ethernaut.openzeppelin.com/level/0xb4B157C7c4b0921065Dded675dFe10759EecaA6D
+
+// Solution
+//

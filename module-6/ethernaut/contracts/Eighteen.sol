@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract MagicNum {
+contract EthernautEighteenMagicNum {
     address public solver;
 
     constructor() {}
@@ -22,3 +22,8 @@ contract MagicNum {
               ___________\///_____\///////////////__
     */
 }
+
+// https://ethernaut.openzeppelin.com/level/0xFe18db6501719Ab506683656AAf2F80243F8D0c0
+
+// Solution
+//

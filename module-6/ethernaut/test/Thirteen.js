@@ -42,9 +42,10 @@ describe("Ethernaut - Thirteen", function () {
 
       const gateKey = `0x100000000000${deployer.address.slice(38)}`;
 
+      // brute forced this gasLimit :D
       await ethernautThirteenGatekeeperOneExploit
         .connect(deployer)
-        .exploit(gateKey, { gasLimit: 32655 });
+        .exploit(gateKey, { gasLimit: 108087 });
 
       expect(await ethernautThirteenGatekeeperOne.entrant()).to.equal(
         deployer.address

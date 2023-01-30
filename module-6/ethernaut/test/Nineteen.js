@@ -1,6 +1,5 @@
 const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
 const { expect } = require("chai");
-const { utils } = require("ethers");
 
 describe("Ethernaut - Nineteen", function () {
   async function deployToken() {

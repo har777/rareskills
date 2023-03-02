@@ -29,3 +29,10 @@ contract EthernautSixDelegation {
         }
     }
 }
+
+// https://ethernaut.openzeppelin.com/level/0xF781b45d11A37c51aabBa1197B61e6397aDf1f78
+
+// Solution:
+// We just need to call a non existing method on EthernautSixDelegation with data being
+// what will be required to call `pwn()` on the EthernautSixDelegate. It will set the
+// owner = msg.sender on EthernautSixDelegation storage.

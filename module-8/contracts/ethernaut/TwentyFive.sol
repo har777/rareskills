@@ -127,6 +127,18 @@ contract EthernautTwentyFiveEngine is Initializable {
     }
 }
 
+contract EthernautTwentyFiveExploit {
+    function exploit() external {
+        selfdestruct(address(0));
+    }
+}
+
 // https://ethernaut.openzeppelin.com/level/0x9b261b23cE149422DE75907C6ac0C30cEc4e652A
 
 // Solution:
+// We need a way to call upgradeToAndCall() such that it points to a contract which has a
+// new function which calls selfdestruct() and then calls it. But upgradeToAndCall() requires the
+// msg.sender to be the upgrader. The exploit lies in the fact that we can just directly call the
+// initialize function of the Engine without proxying it through the motorbike. This means
+// it uses the Engine's storage. The initializer modifier will not catch this. initialize should be blocked
+// in the Engine's constructor itself to prevent this exploit.

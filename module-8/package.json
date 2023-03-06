@@ -14,9 +14,12 @@
     "@openzeppelin/contracts": "^4.8.2",
     "@openzeppelin/contracts-3.4.2": "npm:@openzeppelin/contracts@^3.4.2",
     "@openzeppelin/contracts-upgradeable": "^4.8.2",
+    "@openzeppelin/hardhat-defender": "^1.8.2",
     "@openzeppelin/hardhat-upgrades": "^1.22.1",
+    "defender-relay-client": "^1.39.0",
+    "dotenv": "^16.0.3",
     "ethers": "^5.7.2",
-    "hardhat": "^2.12.7",
+    "hardhat": "^2.13.0",
     "solady": "^0.0.78",
     "solmate": "^6.7.0"
   }

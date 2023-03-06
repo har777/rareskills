@@ -1,6 +1,8 @@
 require("@nomicfoundation/hardhat-toolbox");
 require("@openzeppelin/hardhat-upgrades");
 
+require("dotenv").config();
+
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
   solidity: {
@@ -12,5 +14,15 @@ module.exports = {
         version: "0.6.12",
       },
     ],
+  },
+  networks: {
+    mumbai: {
+      url: process.env.NETWORK_MUMBAI_URL,
+    },
+  },
+  etherscan: {
+    apiKey: {
+      polygonMumbai: process.env.ETHERSCAN_MUMBAI_API_KEY,
+    },
   },
 };

